@@ -7,7 +7,7 @@ export const inngest = new Inngest({ id: "quickqart-next" });
 
 export const syncUserCreation = inngest.createFunction(
   {
-    id: 'sync-user-from-clerk'
+    id: 'sync-user-from-clerk-create'
   },
   { event: 'clerk/user.created' },
   async ({ event }) => {
@@ -25,7 +25,7 @@ export const syncUserCreation = inngest.createFunction(
 
 export const syncUserUpdation = inngest.createFunction(
   {
-    id: 'sync-user-from-clerk'
+    id: 'sync-user-from-clerk-update'
   },
   { event: 'clerk/user.updated' },
   async ({ event }) => {
@@ -43,7 +43,7 @@ export const syncUserUpdation = inngest.createFunction(
 
 export const syncUserDeletion = inngest.createFunction(
   {
-    id: 'delete-user-with-clerk'
+    id: 'sync-user-from-clerk-delete'
   },
   { event: 'clerk/user.deleted' },
   async ({ event }) => {
