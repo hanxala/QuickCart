@@ -1,6 +1,6 @@
 import { Inngest } from "inngest";
 import connectDb from "./db";
-import User from "./models/User"; // Make sure this path is correct
+import User from "../models/User"; // Corrected path
 
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "quickqart-next" });
