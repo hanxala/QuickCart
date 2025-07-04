@@ -26,7 +26,18 @@ export const AppContextProvider = (props) => {
     const [cartItems, setCartItems] = useState({})
 
     const fetchProductData = async () => {
-        setProducts(productsDummyData)
+        try {
+            const { data } = await axios.get('/api/product/list')
+
+            if (data.success) {
+                setProducts(data.products)
+            } else {
+                toast.error(data.message)
+            }
+
+        } catch (error) {
+            toast.error(error.message)
+        }
     }
 
     const fetchUserData = async () => {
@@ -52,8 +63,17 @@ export const AppContextProvider = (props) => {
     }
 
     const addToCart = async (itemId) => {
-
-        let cartData = structuredClone(cartItems);
+        console.log("addToCart called with itemId:", itemId, "products:", products);
+        if (!Array.isArray(products) || products.length === 0) {
+            toast.error("Products not loaded yet!");
+            return;
+        }
+        const itemInfo = products.find((product) => product._id === itemId);
+        if (!itemInfo) {
+            toast.error("Product not found!");
+            return;
+        }
+        let cartData = structuredClone(cartItems || {});
         if (cartData[itemId]) {
             cartData[itemId] += 1;
         }
@@ -61,7 +81,7 @@ export const AppContextProvider = (props) => {
             cartData[itemId] = 1;
         }
         setCartItems(cartData);
-
+        toast.success("Item added to cart")
     }
 
     const updateCartQuantity = async (itemId, quantity) => {
@@ -90,7 +110,7 @@ export const AppContextProvider = (props) => {
         let totalAmount = 0;
         for (const items in cartItems) {
             let itemInfo = products.find((product) => product._id === items);
-            if (cartItems[items] > 0) {
+            if (cartItems[items] > 0 && itemInfo) {
                 totalAmount += itemInfo.offerPrice * cartItems[items];
             }
         }
@@ -106,6 +126,17 @@ export const AppContextProvider = (props) => {
             fetchUserData()
         }
     }, [user])
+
+    useEffect(() => {
+        // Clean up cart items that don't exist in products
+        const validProductIds = new Set(products.map(p => p._id));
+        const cleanedCart = Object.fromEntries(
+            Object.entries(cartItems).filter(([itemId]) => validProductIds.has(itemId))
+        );
+        if (Object.keys(cleanedCart).length !== Object.keys(cartItems).length) {
+            setCartItems(cleanedCart);
+        }
+    }, [products]);
 
     const value = {
         user, getToken,
