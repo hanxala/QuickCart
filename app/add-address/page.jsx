@@ -4,9 +4,12 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Image from "next/image";
 import { useState } from "react";
+import { useAppContext } from "@/context/AppContext";
+import toast from "react-hot-toast";
 
 const AddAddress = () => {
-
+    const { router, userId, isSignedIn } = useAppContext();
+    const [loading, setLoading] = useState(false);
     const [address, setAddress] = useState({
         fullName: '',
         phoneNumber: '',
@@ -14,11 +17,50 @@ const AddAddress = () => {
         area: '',
         city: '',
         state: '',
-    })
+    });
 
     const onSubmitHandler = async (e) => {
         e.preventDefault();
-
+        
+        if (!isSignedIn) {
+            toast.error('Please sign in to add an address');
+            router.push('/sign-in');
+            return;
+        }
+        
+        // Validate form fields
+        for (const field in address) {
+            if (!address[field]) {
+                toast.error(`Please enter your ${field}`);
+                return;
+            }
+        }
+        
+        try {
+            setLoading(true);
+            
+            const response = await fetch(`/api/users/${userId}/addresses`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(address)
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                toast.success('Address added successfully');
+                router.back(); // Go back to previous page
+            } else {
+                toast.error(data.error || 'Failed to add address');
+            }
+        } catch (error) {
+            console.error('Error adding address:', error);
+            toast.error('Failed to add address');
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -76,8 +118,12 @@ const AddAddress = () => {
                             />
                         </div>
                     </div>
-                    <button type="submit" className="max-w-sm w-full mt-6 bg-orange-600 text-white py-3 hover:bg-orange-700 uppercase">
-                        Save address
+                    <button 
+                        type="submit" 
+                        disabled={loading} 
+                        className={`max-w-sm w-full mt-6 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-orange-600 hover:bg-orange-700'} text-white py-3 uppercase`}
+                    >
+                        {loading ? 'Saving...' : 'Save address'}
                     </button>
                 </form>
                 <Image
