@@ -2,6 +2,8 @@
 import { productsDummyData, userDummyData } from "@/assets/assets";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
+import { useAuth } from '@clerk/nextjs';
+import toast from 'react-hot-toast';
 
 export const AppContext = createContext();
 
@@ -13,43 +15,149 @@ export const AppContextProvider = (props) => {
 
     const currency = process.env.NEXT_PUBLIC_CURRENCY
     const router = useRouter()
+    const { userId, isSignedIn, getToken } = useAuth()
 
     const [products, setProducts] = useState([])
     const [userData, setUserData] = useState(false)
-    const [isSeller, setIsSeller] = useState(true)
     const [cartItems, setCartItems] = useState({})
+    const [loading, setLoading] = useState(false)
 
-    const fetchProductData = async () => {
-        setProducts(productsDummyData)
+    const fetchProductData = async (category = '', search = '', page = 1, limit = 50) => {
+        try {
+            setLoading(true)
+            const params = new URLSearchParams()
+            if (category) params.append('category', category)
+            if (search) params.append('search', search)
+            params.append('page', page.toString())
+            params.append('limit', limit.toString())
+            
+            const response = await fetch(`/api/products?${params}`)
+            const data = await response.json()
+            
+            if (data.success) {
+                setProducts(data.data.products)
+            } else {
+                console.error('Failed to fetch products:', data.error)
+                // Fallback to dummy data if API fails
+                setProducts(productsDummyData)
+            }
+        } catch (error) {
+            console.error('Error fetching products:', error)
+            // Fallback to dummy data on error
+            setProducts(productsDummyData)
+        } finally {
+            setLoading(false)
+        }
     }
 
     const fetchUserData = async () => {
-        setUserData(userDummyData)
+        if (!isSignedIn) {
+            setUserData(false)
+            return
+        }
+        
+        try {
+            const token = await getToken()
+            const response = await fetch('/api/users', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            
+            const data = await response.json()
+            
+            if (data.success) {
+                setUserData(data.data)
+                setCartItems(data.data.cartItems || {})
+            } else {
+                console.error('Failed to fetch user data:', data.error)
+                setUserData(userDummyData)
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error)
+            setUserData(userDummyData)
+        }
     }
 
-    const addToCart = async (itemId) => {
-
-        let cartData = structuredClone(cartItems);
-        if (cartData[itemId]) {
-            cartData[itemId] += 1;
+    const addToCart = async (itemId, quantity = 1) => {
+        if (!isSignedIn) {
+            toast.error('Please sign in to add items to cart')
+            return false
         }
-        else {
-            cartData[itemId] = 1;
+        
+        try {
+            const token = await getToken()
+            const response = await fetch('/api/cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ productId: itemId, quantity })
+            })
+            
+            const data = await response.json()
+            
+            if (data.success) {
+                // Update local cart state
+                let cartData = structuredClone(cartItems)
+                if (cartData[itemId]) {
+                    cartData[itemId] += quantity
+                } else {
+                    cartData[itemId] = quantity
+                }
+                setCartItems(cartData)
+                toast.success('Item added to cart')
+                return true
+            } else {
+                toast.error(data.error || 'Failed to add item to cart')
+                return false
+            }
+        } catch (error) {
+            console.error('Error adding to cart:', error)
+            toast.error('Failed to add item to cart')
+            return false
         }
-        setCartItems(cartData);
-
     }
 
     const updateCartQuantity = async (itemId, quantity) => {
-
-        let cartData = structuredClone(cartItems);
-        if (quantity === 0) {
-            delete cartData[itemId];
-        } else {
-            cartData[itemId] = quantity;
+        if (!isSignedIn) {
+            toast.error('Please sign in to update cart')
+            return false
         }
-        setCartItems(cartData)
-
+        
+        try {
+            const token = await getToken()
+            const response = await fetch('/api/cart', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ productId: itemId, quantity })
+            })
+            
+            const data = await response.json()
+            
+            if (data.success) {
+                // Update local cart state
+                let cartData = structuredClone(cartItems)
+                if (quantity === 0) {
+                    delete cartData[itemId]
+                } else {
+                    cartData[itemId] = quantity
+                }
+                setCartItems(cartData)
+                return true
+            } else {
+                toast.error(data.error || 'Failed to update cart')
+                return false
+            }
+        } catch (error) {
+            console.error('Error updating cart:', error)
+            toast.error('Failed to update cart')
+            return false
+        }
     }
 
     const getCartCount = () => {
@@ -78,14 +186,19 @@ export const AppContextProvider = (props) => {
     }, [])
 
     useEffect(() => {
-        fetchUserData()
-    }, [])
+        if (isSignedIn) {
+            fetchUserData()
+        } else {
+            setUserData(false)
+            setCartItems({})
+        }
+    }, [isSignedIn, userId])
 
     const value = {
         currency, router,
-        isSeller, setIsSeller,
+        isSignedIn, userId,
         userData, fetchUserData,
-        products, fetchProductData,
+        products, fetchProductData, loading,
         cartItems, setCartItems,
         addToCart, updateCartQuantity,
         getCartCount, getCartAmount

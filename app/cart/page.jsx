@@ -51,7 +51,7 @@ const Cart = () => {
                         <div>
                           <div className="rounded-lg overflow-hidden bg-gray-500/10 p-2">
                             <Image
-                              src={product.image[0]}
+                              src={product.image?.[0] || product.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yNiAyNkMzMC40MTgzIDI2IDM0IDI5LjU4MTcgMzQgMzRDMzQgMzguNDE4MyAzMC40MTgzIDQyIDI2IDQyQzIxLjU4MTcgNDIgMTggMzguNDE4MyAxOCAzNEMxOCAyOS41ODE3IDIxLjU4MTcgMjYgMjYgMjZaIiBmaWxsPSIjOUI5QjlCIi8+CjxwYXRoIGQ9Ik0yNiAzNEMyNi44ODQgMzQgMjcuNiAzMy4zMjggMjcuNiAzMi40QzI3LjYgMzEuNDcyIDI2Ljg4NCAzMC44IDI2IDMwLjhDMjUuMTE2IDMwLjggMjQuNCAzMS40NzIgMjQuNCAzMi40QzI0LjQgMzMuMzI4IDI1LjExNiAzNCAyNiAzNFoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg=='}
                               alt={product.name}
                               className="w-16 h-auto object-cover mix-blend-multiply"
                               width={1280}

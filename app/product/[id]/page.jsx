@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import Loading from "@/components/Loading";
 import { useAppContext } from "@/context/AppContext";
+import { getValidImageUrl } from "@/lib/imageUtils";
 import React from "react";
 
 const Product = () => {
@@ -35,7 +36,7 @@ const Product = () => {
                 <div className="px-5 lg:px-16 xl:px-20">
                     <div className="rounded-lg overflow-hidden bg-gray-500/10 mb-4">
                         <Image
-                            src={mainImage || productData.image[0]}
+                            src={getValidImageUrl(mainImage || productData.image[0])}
                             alt="alt"
                             className="w-full h-auto object-cover mix-blend-multiply"
                             width={1280}
@@ -51,7 +52,7 @@ const Product = () => {
                                 className="cursor-pointer rounded-lg overflow-hidden bg-gray-500/10"
                             >
                                 <Image
-                                    src={image}
+                                    src={getValidImageUrl(image)}
                                     alt="alt"
                                     className="w-full h-auto object-cover mix-blend-multiply"
                                     width={1280}

@@ -2,6 +2,7 @@ import React from 'react'
 import { assets } from '@/assets/assets'
 import Image from 'next/image';
 import { useAppContext } from '@/context/AppContext';
+import { getValidImageUrl } from '@/lib/imageUtils';
 
 const ProductCard = ({ product }) => {
 
@@ -14,7 +15,7 @@ const ProductCard = ({ product }) => {
         >
             <div className="cursor-pointer group relative bg-gray-500/10 rounded-lg w-full h-52 flex items-center justify-center">
                 <Image
-                    src={product.image[0]}
+                    src={getValidImageUrl(product.image)}
                     alt={product.name}
                     className="group-hover:scale-105 transition object-cover w-4/5 h-4/5 md:w-full md:h-full"
                     width={800}
