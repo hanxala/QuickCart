@@ -1,17 +1,34 @@
-import { addressDummyData } from "@/assets/assets";
 import { useAppContext } from "@/context/AppContext";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const OrderSummary = () => {
 
-  const { currency, router, getCartCount, getCartAmount } = useAppContext()
+  const { currency, router, getCartCount, getCartAmount, cartItems, products, isSignedIn, userId } = useAppContext()
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
   const [userAddresses, setUserAddresses] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchUserAddresses = async () => {
-    setUserAddresses(addressDummyData);
+    if (!isSignedIn || !userId) return;
+    
+    try {
+      const response = await fetch(`/api/users/${userId}/addresses`);
+      const data = await response.json();
+      
+      if (data.success) {
+        setUserAddresses(data.addresses);
+        // Set default address if available
+        const defaultAddress = data.addresses.find(addr => addr.isDefault);
+        if (defaultAddress) {
+          setSelectedAddress(defaultAddress);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching addresses:', error);
+      toast.error('Failed to load addresses');
+    }
   }
 
   const handleAddressSelect = (address) => {
@@ -20,7 +37,76 @@ const OrderSummary = () => {
   };
 
   const createOrder = async () => {
-
+    if (!isSignedIn) {
+      toast.error('Please sign in to place an order');
+      router.push('/sign-in');
+      return;
+    }
+    
+    if (!selectedAddress) {
+      toast.error('Please select a delivery address');
+      return;
+    }
+    
+    if (getCartCount() === 0) {
+      toast.error('Your cart is empty');
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      
+      // Prepare order items from cart
+      const orderProducts = Object.keys(cartItems)
+        .map(productId => {
+          const product = products.find(p => p._id === productId);
+          if (!product || !product.offerPrice) {
+            console.warn(`Product ${productId} not found or missing offerPrice`);
+            return null;
+          }
+          return {
+            productId,
+            quantity: cartItems[productId],
+            price: product.offerPrice
+          };
+        })
+        .filter(Boolean); // Remove null items
+      
+      const totalAmount = getCartAmount() + Math.floor(getCartAmount() * 0.02); // Including tax
+      
+      const orderData = {
+        userId,
+        products: orderProducts,
+        address: selectedAddress,
+        totalAmount
+      };
+      
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        // Clear cart from localStorage
+        localStorage.removeItem('cartItems');
+        
+        // Redirect to order success page
+        router.push('/order-placed');
+        toast.success('Order placed successfully!');
+      } else {
+        toast.error(data.error || 'Failed to place order');
+      }
+    } catch (error) {
+      console.error('Error creating order:', error);
+      toast.error('Failed to place order');
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -115,8 +201,14 @@ const OrderSummary = () => {
         </div>
       </div>
 
-      <button onClick={createOrder} className="w-full bg-orange-600 text-white py-3 mt-5 hover:bg-orange-700">
-        Place Order
+      <button 
+        onClick={createOrder} 
+        disabled={loading || !selectedAddress || getCartCount() === 0} 
+        className={`w-full py-3 mt-5 ${loading || !selectedAddress || getCartCount() === 0 
+          ? 'bg-gray-400 cursor-not-allowed' 
+          : 'bg-orange-600 hover:bg-orange-700'} text-white`}
+      >
+        {loading ? 'Processing...' : 'Place Order'}
       </button>
     </div>
   );

@@ -174,16 +174,43 @@ export const AppContextProvider = (props) => {
         let totalAmount = 0;
         for (const items in cartItems) {
             let itemInfo = products.find((product) => product._id === items);
-            if (cartItems[items] > 0) {
+            if (cartItems[items] > 0 && itemInfo && itemInfo.offerPrice) {
                 totalAmount += itemInfo.offerPrice * cartItems[items];
             }
         }
         return Math.floor(totalAmount * 100) / 100;
     }
 
+    const cleanupInvalidCartItems = () => {
+        if (!products.length) return;
+        
+        const validCartItems = {};
+        let hasInvalidItems = false;
+        
+        for (const itemId in cartItems) {
+            const product = products.find((product) => product._id === itemId);
+            if (product && product.offerPrice && cartItems[itemId] > 0) {
+                validCartItems[itemId] = cartItems[itemId];
+            } else if (cartItems[itemId] > 0) {
+                hasInvalidItems = true;
+                console.warn(`Removing invalid cart item: ${itemId}`);
+            }
+        }
+        
+        if (hasInvalidItems) {
+            setCartItems(validCartItems);
+        }
+    }
+
     useEffect(() => {
         fetchProductData()
     }, [])
+    
+    useEffect(() => {
+        if (products.length > 0) {
+            cleanupInvalidCartItems()
+        }
+    }, [products])
 
     useEffect(() => {
         if (isSignedIn) {
