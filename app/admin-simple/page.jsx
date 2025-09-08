@@ -28,16 +28,27 @@ export default function SimpleAdminPanel() {
       }
 
       try {
-        // Sync user first
-        const syncResponse = await fetch('/api/auth/sync-user', {
-          method: 'POST'
-        });
-        const syncData = await syncResponse.json();
-
-        if (syncData.success && syncData.isAdmin) {
+        // Try fallback admin check first (doesn't require database)
+        const fallbackResponse = await fetch('/api/admin/check-fallback');
+        const fallbackData = await fallbackResponse.json();
+        
+        if (fallbackData.isAdmin) {
+          console.log('✅ Admin access granted via fallback check');
           setIsAdmin(true);
         } else {
-          router.push('/');
+          // Try sync as backup
+          const syncResponse = await fetch('/api/auth/sync-user', {
+            method: 'POST'
+          });
+          const syncData = await syncResponse.json();
+
+          if (syncData.success && syncData.isAdmin) {
+            console.log('✅ Admin access granted via sync');
+            setIsAdmin(true);
+          } else {
+            console.log('❌ Admin access denied');
+            router.push('/');
+          }
         }
       } catch (error) {
         console.error('Admin check failed:', error);

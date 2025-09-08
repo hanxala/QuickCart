@@ -33,12 +33,12 @@ export default function UserProfileDropdown() {
           console.log('✅ Sync successful, isAdmin:', syncData.isAdmin);
           setIsAdmin(syncData.isAdmin || false);
         } else {
-          console.log('⚠️ Sync failed, trying direct admin check');
-          // Fallback to direct admin check
-          const checkResponse = await fetch('/api/admin/check-access');
-          const checkData = await checkResponse.json();
-          console.log('🔍 Direct admin check response:', checkData);
-          setIsAdmin(checkData.isAdmin || false);
+          console.log('⚠️ Sync failed, trying fallback admin check');
+          // Fallback to email-based admin check (doesn't require database)
+          const fallbackResponse = await fetch('/api/admin/check-fallback');
+          const fallbackData = await fallbackResponse.json();
+          console.log('🔍 Fallback admin check response:', fallbackData);
+          setIsAdmin(fallbackData.isAdmin || false);
         }
       } catch (error) {
         console.error('❌ Error syncing user or checking admin status:', error);

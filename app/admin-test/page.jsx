@@ -18,6 +18,14 @@ export default function AdminTestPage() {
       }
 
       try {
+        // Test database connection
+        const dbTestResponse = await fetch('/api/test/db');
+        const dbTestData = await dbTestResponse.json();
+        
+        // Test fallback admin check (doesn't require database)
+        const fallbackResponse = await fetch('/api/admin/check-fallback');
+        const fallbackData = await fallbackResponse.json();
+
         // Test sync API
         const syncResponse = await fetch('/api/auth/sync-user', {
           method: 'POST'
@@ -34,6 +42,8 @@ export default function AdminTestPage() {
 
         setAdminStatus({
           user: user.emailAddresses[0]?.emailAddress,
+          databaseTest: dbTestData,
+          fallbackCheck: fallbackData,
           sync: syncData,
           check: checkData,
           debug: debugData
@@ -71,7 +81,7 @@ export default function AdminTestPage() {
             {JSON.stringify(adminStatus, null, 2)}
           </pre>
           
-          {adminStatus && (adminStatus.sync?.isAdmin || adminStatus.check?.isAdmin || adminStatus.debug?.isAdmin) && (
+          {adminStatus && (adminStatus.fallbackCheck?.isAdmin || adminStatus.sync?.isAdmin || adminStatus.check?.isAdmin || adminStatus.debug?.isAdmin) && (
             <div className="mt-6 space-y-4">
               <div className="bg-green-50 border border-green-200 p-4 rounded">
                 <p className="text-green-800 font-semibold">✅ Admin Access Confirmed!</p>
