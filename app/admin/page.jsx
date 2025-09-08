@@ -20,54 +20,75 @@ export default function AdminDashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      console.log('📡 Fetching dashboard data...');
+      console.log('📡 Fetching LIVE dashboard data...');
       
-      // Try main dashboard API first
-      let response = await fetch('/api/admin/dashboard');
+      // Try main dashboard API with longer timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 seconds timeout
+      
+      let response = await fetch('/api/admin/dashboard', {
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
       let data = await response.json();
       
       if (data.success) {
-        console.log('✅ Main dashboard API successful');
+        console.log('✅ LIVE dashboard data loaded successfully!');
         setDashboardData(data.data);
         setLastUpdated(new Date(data.data.lastUpdated));
+        toast.success('Live dashboard data loaded successfully!');
+        return; // Exit early on success
       } else {
-        console.log('⚠️ Main dashboard API failed, trying fallback...');
-        
-        // Try fallback dashboard API
-        response = await fetch('/api/admin/dashboard-fallback');
-        data = await response.json();
-        
-        if (data.success) {
-          console.log('✅ Fallback dashboard API successful');
-          setDashboardData(data.data);
-          setLastUpdated(new Date(data.data.lastUpdated));
-          toast.success('Dashboard loaded with sample data');
-        } else {
-          throw new Error('Both dashboard APIs failed');
-        }
+        console.log('⚠️ Main dashboard API failed:', data.error);
+        throw new Error(data.error || 'Dashboard API failed');
       }
-    } catch (error) {
-      console.error('❌ Error fetching dashboard data:', error);
-      toast.error('Error loading dashboard');
       
-      // Set minimal fallback data directly
-      setDashboardData({
-        stats: {
-          products: { total: 0, active: 0, lowStock: 0, growth: 0 },
-          users: { total: 0, newToday: 0, growth: 0 },
-          orders: { total: 0, today: 0, thisWeek: 0, thisMonth: 0, pending: 0, growthDaily: 0, growthWeekly: 0 },
-          revenue: { total: 0, today: 0, thisWeek: 0, thisMonth: 0, growthDaily: 0, growthWeekly: 0 }
-        },
-        recentOrders: [],
-        topProducts: [],
-        alerts: [{
-          type: 'warning',
-          title: 'Dashboard Unavailable',
-          message: 'Unable to load dashboard data. Please try again later.'
-        }],
-        lastUpdated: new Date().toISOString()
-      });
-      setLastUpdated(new Date());
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        console.error('❌ Dashboard request timed out after 60 seconds');
+        toast.error('Dashboard request timed out. Using sample data.');
+      } else {
+        console.error('❌ Error fetching live dashboard data:', error);
+        toast.error('Could not load live data. Using sample data.');
+      }
+      
+      // Only use fallback as last resort
+      try {
+        console.log('🔄 Loading sample data as fallback...');
+        const fallbackResponse = await fetch('/api/admin/dashboard-fallback');
+        const fallbackData = await fallbackResponse.json();
+        
+        if (fallbackData.success) {
+          console.log('⚠️ Using sample dashboard data');
+          setDashboardData(fallbackData.data);
+          setLastUpdated(new Date(fallbackData.data.lastUpdated));
+        } else {
+          throw new Error('Fallback also failed');
+        }
+      } catch (fallbackError) {
+        console.error('❌ Even fallback failed:', fallbackError);
+        
+        // Set minimal error state
+        setDashboardData({
+          stats: {
+            products: { total: 0, active: 0, lowStock: 0, growth: 0 },
+            users: { total: 0, newToday: 0, growth: 0 },
+            orders: { total: 0, today: 0, thisWeek: 0, thisMonth: 0, pending: 0, growthDaily: 0, growthWeekly: 0 },
+            revenue: { total: 0, today: 0, thisWeek: 0, thisMonth: 0, growthDaily: 0, growthWeekly: 0 }
+          },
+          recentOrders: [],
+          topProducts: [],
+          alerts: [{
+            type: 'error',
+            title: 'Dashboard Unavailable',
+            message: 'Unable to load dashboard data. Please check your database connection and try again.'
+          }],
+          lastUpdated: new Date().toISOString()
+        });
+        setLastUpdated(new Date());
+        toast.error('Dashboard completely unavailable');
+      }
     } finally {
       setLoading(false);
     }

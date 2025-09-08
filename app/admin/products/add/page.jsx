@@ -137,16 +137,15 @@ export default function AddProduct() {
         return;
       }
 
-      // Create product - try main API first, then fallback
-      console.log('📦 Creating product...', product);
-      
-      let response;
-      let data;
-      let usedFallback = false;
+      // Create product - PRIORITIZE DATABASE STORAGE
+      console.log('📦 Creating product in DATABASE...', product);
       
       try {
-        // Try main products API first
-        response = await fetch('/api/products', {
+        // Try main products API with extended timeout for database operations
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 90000); // 90 seconds for database operations
+        
+        const response = await fetch('/api/products', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -156,63 +155,39 @@ export default function AddProduct() {
             userId: userId || user?.id || 'fallback-user',
             image: imageUrls,
           }),
+          signal: controller.signal
         });
         
-        data = await response.json();
+        clearTimeout(timeoutId);
+        const data = await response.json();
         
-        if (!data.success) {
-          console.log('⚠️ Main products API failed, trying fallback...');
-          
-          // Try fallback API
-          response = await fetch('/api/products/fallback', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              ...product,
-              userId: userId || user?.id || 'fallback-user',
-              image: imageUrls,
-            }),
-          });
-          
-          data = await response.json();
-          usedFallback = true;
+        if (data.success) {
+          console.log('✅ Product successfully saved to DATABASE!');
+          toast.success('Product successfully added to database!');
+          router.push('/admin/products');
+          return; // Exit on success
+        } else {
+          console.error('❌ Database save failed:', data.error);
+          throw new Error(data.error || 'Database save failed');
         }
         
       } catch (error) {
-        console.log('⚠️ Main API error, trying fallback...', error);
-        
-        // Try fallback API on any error
-        try {
-          response = await fetch('/api/products/fallback', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              ...product,
-              userId: userId || user?.id || 'fallback-user',
-              image: imageUrls,
-            }),
-          });
-          
-          data = await response.json();
-          usedFallback = true;
-        } catch (fallbackError) {
-          throw new Error('Both main and fallback APIs failed');
+        if (error.name === 'AbortError') {
+          console.error('❌ Database operation timed out after 90 seconds');
+          toast.error('Database operation timed out. This may indicate a connection issue.');
+        } else {
+          console.error('❌ Database error:', error.message);
+          toast.error(`Database error: ${error.message}`);
         }
-      }
-
-      if (data.success) {
-        const message = usedFallback 
-          ? 'Product added successfully (using fallback storage)'
-          : 'Product added successfully';
-        toast.success(message);
-        router.push('/admin/products');
-      } else {
-        console.error('❌ Product creation failed:', data);
-        toast.error(data.error || 'Failed to add product');
+        
+        // Show database connection troubleshooting
+        toast.error('Please check: 1) MongoDB connection 2) Environment variables 3) Network connectivity', {
+          duration: 8000
+        });
+        
+        // DO NOT use fallback for real data requirements
+        console.log('❌ Not using fallback - you requested database storage only');
+        return; // Exit without fallback
       }
     } catch (error) {
       console.error('Error adding product:', error);
