@@ -63,3 +63,27 @@ export async function checkAdminAccess() {
     return { isAdmin: false, user: null };
   }
 }
+
+export async function adminMiddleware(userId) {
+  try {
+    if (!userId) {
+      return { error: "Authentication required", status: 401 };
+    }
+
+    await dbConnect();
+    const user = await User.findOne({ clerkUserId: userId });
+
+    if (!user) {
+      return { error: "User not found", status: 404 };
+    }
+
+    if (user.role !== 'admin') {
+      return { error: "Admin access required", status: 403 };
+    }
+
+    return { user, userId };
+  } catch (error) {
+    console.error('Admin middleware error:', error);
+    return { error: "Authentication failed", status: 500 };
+  }
+}
