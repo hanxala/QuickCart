@@ -300,7 +300,7 @@ export default function AddProduct() {
       };
 
       // Show loading message with product name
-      notify.loading(`🔄 Creating "${productData.name}"...`, {
+      notify.loading(`✨ Creating "${productData.name}"...`, {
         id: 'add-product-loading',
         duration: Infinity,
       });
@@ -317,11 +317,11 @@ export default function AddProduct() {
       notify.dismiss('add-product-loading');
       
       if (response.ok) {
-        notify.success(`✅ "${productData.name}" added successfully!`);
+        notify.success(`🎉 "${productData.name}" created successfully!`);
         
         // Show success options
         const addAnother = confirm(
-          `✨ Product added successfully!\n\n"${productData.name}" is now available in your store.\n\nWould you like to add another product?`
+          `🎉 Product created successfully!\n\n"${productData.name}" is now live in your store and ready for customers to purchase!\n\nWould you like to add another product?`
         );
         
         if (addAnother) {

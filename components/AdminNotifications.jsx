@@ -104,6 +104,7 @@ const AdminNotifications = () => {
       case 'error': return '❌';
       case 'success': return '✅';
       case 'user': return '👤';
+      case 'product': return '📦';
       case 'info': return 'ℹ️';
       default: return '🔔';
     }
@@ -116,6 +117,7 @@ const AdminNotifications = () => {
       case 'error': return 'bg-red-100 border-red-300 text-red-800';
       case 'success': return 'bg-green-100 border-green-300 text-green-800';
       case 'user': return 'bg-purple-100 border-purple-300 text-purple-800';
+      case 'product': return 'bg-orange-100 border-orange-300 text-orange-800';
       case 'info': return 'bg-gray-100 border-gray-300 text-gray-800';
       default: return 'bg-gray-100 border-gray-300 text-gray-800';
     }
@@ -205,6 +207,21 @@ const AdminNotifications = () => {
                             {notification.data.amount && (
                               <span className="inline-block px-2 py-1 text-xs bg-green-100 text-green-800 rounded mr-2">
                                 ₹{notification.data.amount}
+                              </span>
+                            )}
+                            {notification.data.price && (
+                              <span className="inline-block px-2 py-1 text-xs bg-green-100 text-green-800 rounded mr-2">
+                                ₹{notification.data.price}
+                              </span>
+                            )}
+                            {notification.data.category && (
+                              <span className="inline-block px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded mr-2">
+                                {notification.data.category}
+                              </span>
+                            )}
+                            {notification.data.discount > 0 && (
+                              <span className="inline-block px-2 py-1 text-xs bg-red-100 text-red-800 rounded mr-2">
+                                {notification.data.discount}% OFF
                               </span>
                             )}
                             {notification.data.stock !== undefined && (

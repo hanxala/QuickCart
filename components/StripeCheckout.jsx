@@ -13,7 +13,22 @@ import toast from 'react-hot-toast';
 
 // Make sure to call `loadStripe` outside of a component's render to avoid
 // recreating the `Stripe` object on every render.
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+const getStripePromise = () => {
+  const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+  
+  // Check if publishable key exists and is not a placeholder
+  if (!publishableKey || 
+      publishableKey === 'your_stripe_publishable_key_here' || 
+      publishableKey.trim() === '' ||
+      !publishableKey.startsWith('pk_')) {
+    console.warn('Stripe publishable key is not configured properly. Stripe functionality will be disabled.');
+    return null;
+  }
+  
+  return loadStripe(publishableKey);
+};
+
+const stripePromise = getStripePromise();
 
 const CheckoutForm = ({ clientSecret, paymentIntentId, amount, onPaymentSuccess, onPaymentError }) => {
   const stripe = useStripe();
@@ -184,6 +199,24 @@ const StripeCheckout = ({
 
   if (!isVisible) {
     return null;
+  }
+
+  // Check if Stripe is properly configured
+  if (!stripePromise) {
+    return (
+      <div className="p-6 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <div className="flex">
+          <div className="ml-3">
+            <h3 className="text-sm font-medium text-yellow-800">
+              Stripe Payment Not Configured
+            </h3>
+            <div className="mt-2 text-sm text-yellow-700">
+              <p>Stripe payment gateway is not configured. Please contact the administrator or use alternative payment methods.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (isLoading) {

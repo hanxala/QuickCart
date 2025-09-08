@@ -2,6 +2,7 @@ import { requireAdmin } from '@/middleware/admin';
 import dbConnect from '@/lib/database';
 import Product from '@/models/Product';
 import { NextResponse } from 'next/server';
+import notificationService from '@/lib/notificationService';
 
 // GET - Admin fetch all products (including inactive)
 export async function GET() {
@@ -69,6 +70,14 @@ export async function POST(request) {
     });
 
     await product.save();
+
+    // Send real-time notification to admin dashboard
+    try {
+      await notificationService.notifyProductCreated(product);
+    } catch (notifyError) {
+      console.warn('Failed to send product creation notification:', notifyError);
+      // Don't fail the request if notification fails
+    }
 
     return NextResponse.json({
       success: true,
