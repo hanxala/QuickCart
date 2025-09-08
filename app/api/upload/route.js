@@ -6,9 +6,17 @@ export async function POST(request) {
   try {
     // Check if Cloudinary is properly configured
     if (!isConfigured) {
-      const errorMessage = `Cloudinary is not properly configured. Missing environment variables: ${missingVars.join(', ')}`;
-      const response = createApiResponse(errorMessage, 500);
-      return NextResponse.json(response, { status: 500 });
+      console.log('⚠️ Cloudinary not configured, using placeholder image');
+      console.log('Missing environment variables:', missingVars);
+      
+      // Return placeholder image URL instead of error
+      const response = createApiResponse({
+        url: 'https://via.placeholder.com/400x400/e5e7eb/6b7280?text=Product+Image',
+        public_id: 'placeholder_' + Date.now(),
+        isPlaceholder: true,
+        message: 'Cloudinary not configured, using placeholder image'
+      });
+      return NextResponse.json(response, { status: 200 });
     }
 
     const auth = await authMiddleware(request);

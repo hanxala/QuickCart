@@ -15,6 +15,7 @@ export default function AddProduct() {
     category: 'Electronics',
     price: '',
     offerPrice: '',
+    stock: '',
   });
 
   const categories = [
@@ -34,7 +35,7 @@ export default function AddProduct() {
     const { name, value } = e.target;
     setProduct(prev => ({
       ...prev,
-      [name]: name === 'price' || name === 'offerPrice' ? parseFloat(value) || '' : value
+      [name]: ['price', 'offerPrice', 'stock'].includes(name) ? parseFloat(value) || '' : value
     }));
   };
 
@@ -53,28 +54,41 @@ export default function AddProduct() {
     const uploadPromises = files.map(async (file) => {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('upload_preset', 'quickcart'); // Replace with your Cloudinary upload preset
 
       try {
-        const response = await fetch(
-          'https://api.cloudinary.com/v1_1/your-cloud-name/image/upload', // Replace with your Cloudinary cloud name
-          {
-            method: 'POST',
-            body: formData,
-          }
-        );
+        console.log('📷 Uploading image:', file.name);
+        
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
 
-        const data = await response.json();
-        return data.secure_url;
+        const result = await response.json();
+        
+        if (result.success) {
+          console.log('✅ Image uploaded successfully:', result.data?.url || result.url);
+          
+          if (result.data?.isPlaceholder || result.isPlaceholder) {
+            toast.info('Using placeholder image (Cloudinary not configured)');
+          }
+          
+          return result.data?.url || result.url;
+        } else {
+          throw new Error(result.error || 'Upload failed');
+        }
       } catch (error) {
-        console.error('Error uploading image:', error);
-        throw new Error('Failed to upload image');
+        console.error('❌ Error uploading image:', error);
+        toast.error(`Failed to upload ${file.name}`);
+        throw error;
       }
     });
 
     try {
-      return await Promise.all(uploadPromises);
+      const uploadedUrls = await Promise.all(uploadPromises);
+      console.log('✅ All images uploaded:', uploadedUrls);
+      return uploadedUrls;
     } catch (error) {
+      console.error('❌ Failed to upload images:', error);
       toast.error('Failed to upload one or more images');
       return [];
     }
@@ -89,6 +103,11 @@ export default function AddProduct() {
         toast.error(`Please enter product ${key}`);
         return;
       }
+    }
+    
+    // Set default stock if not provided
+    if (!product.stock) {
+      setProduct(prev => ({ ...prev, stock: 0 }));
     }
 
     if (!product.offerPrice) {
@@ -217,6 +236,20 @@ export default function AddProduct() {
                   step="0.01"
                 />
               </div>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Stock Quantity</label>
+              <input
+                type="number"
+                name="stock"
+                value={product.stock}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-gray-300 rounded"
+                placeholder="0"
+                min="0"
+                step="1"
+              />
             </div>
           </div>
 

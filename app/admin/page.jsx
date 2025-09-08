@@ -20,18 +20,54 @@ export default function AdminDashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      const response = await fetch('/api/admin/dashboard');
-      const data = await response.json();
+      console.log('📡 Fetching dashboard data...');
+      
+      // Try main dashboard API first
+      let response = await fetch('/api/admin/dashboard');
+      let data = await response.json();
       
       if (data.success) {
+        console.log('✅ Main dashboard API successful');
         setDashboardData(data.data);
         setLastUpdated(new Date(data.data.lastUpdated));
       } else {
-        toast.error('Failed to load dashboard data');
+        console.log('⚠️ Main dashboard API failed, trying fallback...');
+        
+        // Try fallback dashboard API
+        response = await fetch('/api/admin/dashboard-fallback');
+        data = await response.json();
+        
+        if (data.success) {
+          console.log('✅ Fallback dashboard API successful');
+          setDashboardData(data.data);
+          setLastUpdated(new Date(data.data.lastUpdated));
+          toast.success('Dashboard loaded with sample data');
+        } else {
+          throw new Error('Both dashboard APIs failed');
+        }
       }
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+      console.error('❌ Error fetching dashboard data:', error);
       toast.error('Error loading dashboard');
+      
+      // Set minimal fallback data directly
+      setDashboardData({
+        stats: {
+          products: { total: 0, active: 0, lowStock: 0, growth: 0 },
+          users: { total: 0, newToday: 0, growth: 0 },
+          orders: { total: 0, today: 0, thisWeek: 0, thisMonth: 0, pending: 0, growthDaily: 0, growthWeekly: 0 },
+          revenue: { total: 0, today: 0, thisWeek: 0, thisMonth: 0, growthDaily: 0, growthWeekly: 0 }
+        },
+        recentOrders: [],
+        topProducts: [],
+        alerts: [{
+          type: 'warning',
+          title: 'Dashboard Unavailable',
+          message: 'Unable to load dashboard data. Please try again later.'
+        }],
+        lastUpdated: new Date().toISOString()
+      });
+      setLastUpdated(new Date());
     } finally {
       setLoading(false);
     }
