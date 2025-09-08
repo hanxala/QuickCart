@@ -5,6 +5,7 @@ import Product from '@/models/Product';
 import { NextResponse } from 'next/server';
 import { authMiddleware, createApiResponse, handleApiError } from '@/middleware/auth';
 import emailService from '@/lib/emailService';
+import notificationService from '@/lib/notificationService';
 
 // GET - Fetch user's orders
 export async function GET(request) {
@@ -59,11 +60,32 @@ export async function POST(request) {
       return NextResponse.json(response, { status: auth.status });
     }
 
-    const { items, address, paymentMethod = 'cod' } = await request.json();
+    const { items, address, paymentMethod = 'cod', paymentIntentId } = await request.json();
 
     if (!items || !items.length || !address) {
       const response = createApiResponse('Items and address are required', 400);
       return NextResponse.json(response, { status: 400 });
+    }
+
+    // Handle different payment methods
+    let paymentStatus = 'pending';
+    
+    switch (paymentMethod) {
+      case 'cod':
+        paymentStatus = 'pending'; // Payment will be collected on delivery
+        break;
+      case 'upi':
+        paymentStatus = 'pending'; // Will be updated once UPI payment is verified
+        break;
+      case 'card':
+        if (!paymentIntentId) {
+          const response = createApiResponse('Payment intent ID is required for card payments', 400);
+          return NextResponse.json(response, { status: 400 });
+        }
+        paymentStatus = 'completed';
+        break;
+      default:
+        paymentStatus = 'pending';
     }
 
     // Validate address fields
@@ -107,7 +129,7 @@ export async function POST(request) {
     }
 
     // Calculate additional costs
-    const shippingCost = totalAmount > 500 ? 0 : 50; // Free shipping above $500
+    const shippingCost = totalAmount > 500 ? 0 : 50; // Free shipping above ₹500
     const taxAmount = totalAmount * 0.1; // 10% tax
     const finalAmount = totalAmount + shippingCost + taxAmount;
 
@@ -124,7 +146,8 @@ export async function POST(request) {
       finalAmount,
       address,
       paymentMethod,
-      paymentStatus: paymentMethod === 'cod' ? 'pending' : 'completed',
+      paymentStatus,
+      paymentIntentId: paymentIntentId || '',
       estimatedDelivery
     });
 
@@ -140,7 +163,7 @@ export async function POST(request) {
     // Populate the order before returning
     const populatedOrder = await Order.findById(order._id).populate('items.product');
 
-    // Send admin notification email
+    // Send admin notification email and live notification
     try {
       await emailService.notifyNewOrder(populatedOrder);
       console.log('Admin notification email sent for order:', populatedOrder._id);
@@ -149,17 +172,37 @@ export async function POST(request) {
       // Don't fail the order creation if email fails
     }
 
+    // Send live notification to admin dashboard
+    try {
+      await notificationService.notifyNewOrder(populatedOrder);
+      console.log('Live notification sent for order:', populatedOrder._id);
+    } catch (notificationError) {
+      console.error('Failed to send live notification:', notificationError);
+      // Don't fail the order creation if notification fails
+    }
+
     // Check for low stock products and send alerts
     try {
       for (const item of items) {
         const product = await Product.findById(item.productId);
         if (product && product.stock <= 5) { // Alert when stock is 5 or below
+          // Send email alert
           await emailService.notifyLowStock(product);
-          console.log('Low stock alert sent for product:', product.name);
+          console.log('Low stock email alert sent for product:', product.name);
+          
+          // Send live notification
+          await notificationService.notifyLowStock(product);
+          console.log('Low stock live notification sent for product:', product.name);
+        }
+        
+        // Check for out of stock
+        if (product && product.stock === 0) {
+          await notificationService.notifyProductOutOfStock(product);
+          console.log('Out of stock notification sent for product:', product.name);
         }
       }
-    } catch (stockEmailError) {
-      console.error('Failed to send low stock alerts:', stockEmailError);
+    } catch (stockAlertError) {
+      console.error('Failed to send stock alerts:', stockAlertError);
     }
 
     const response = createApiResponse(populatedOrder, 201);

@@ -134,7 +134,7 @@ const Navbar = () => {
                       />
                       <div className="flex-1">
                         <p className="text-sm font-medium text-gray-800 truncate">{product.name}</p>
-                        <p className="text-xs text-gray-500">${product.offerPrice}</p>
+                        <p className="text-xs text-gray-500">₹{product.offerPrice}</p>
                       </div>
                     </div>
                   ))}

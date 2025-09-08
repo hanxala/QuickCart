@@ -1,0 +1,46 @@
+<svg width="192" height="192" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+  <!-- QR Code Pattern Placeholder -->
+  <rect width="192" height="192" fill="white" stroke="#ccc" stroke-width="2"/>
+  
+  <!-- Corner squares -->
+  <rect x="16" y="16" width="32" height="32" fill="black"/>
+  <rect x="24" y="24" width="16" height="16" fill="white"/>
+  
+  <rect x="144" y="16" width="32" height="32" fill="black"/>
+  <rect x="152" y="24" width="16" height="16" fill="white"/>
+  
+  <rect x="16" y="144" width="32" height="32" fill="black"/>
+  <rect x="24" y="152" width="16" height="16" fill="white"/>
+  
+  <!-- Pattern blocks -->
+  <rect x="64" y="16" width="8" height="8" fill="black"/>
+  <rect x="80" y="16" width="8" height="8" fill="black"/>
+  <rect x="96" y="16" width="8" height="8" fill="black"/>
+  <rect x="112" y="16" width="8" height="8" fill="black"/>
+  
+  <rect x="16" y="64" width="8" height="8" fill="black"/>
+  <rect x="32" y="64" width="8" height="8" fill="black"/>
+  <rect x="16" y="80" width="8" height="8" fill="black"/>
+  <rect x="40" y="80" width="8" height="8" fill="black"/>
+  
+  <!-- Center pattern -->
+  <rect x="80" y="80" width="32" height="32" fill="black"/>
+  <rect x="88" y="88" width="16" height="16" fill="white"/>
+  <rect x="96" y="96" width="8" height="8" fill="black"/>
+  
+  <!-- Random pattern blocks to simulate QR -->
+  <rect x="64" y="64" width="8" height="8" fill="black"/>
+  <rect x="128" y="64" width="8" height="8" fill="black"/>
+  <rect x="144" y="80" width="8" height="8" fill="black"/>
+  <rect x="160" y="96" width="8" height="8" fill="black"/>
+  <rect x="64" y="128" width="8" height="8" fill="black"/>
+  <rect x="128" y="144" width="8" height="8" fill="black"/>
+  <rect x="160" y="160" width="8" height="8" fill="black"/>
+  
+  <!-- UPI logo placeholder -->
+  <circle cx="96" cy="96" r="12" fill="white" stroke="black" stroke-width="1"/>
+  <text x="96" y="100" text-anchor="middle" font-family="Arial" font-size="8" fill="black">UPI</text>
+  
+  <!-- Bottom text -->
+  <text x="96" y="184" text-anchor="middle" font-family="Arial" font-size="10" fill="#666">Scan to Pay</text>
+</svg>

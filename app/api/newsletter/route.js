@@ -70,17 +70,17 @@ export async function POST(request) {
     try {
       await emailService.sendEmail(
         email,
-        'Welcome to QuickCart Newsletter! 🎉',
+        'Welcome to Hanzala.co Newsletter! 🎉',
         `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #ea580c; margin: 0;">Welcome to QuickCart!</h1>
+              <h1 style="color: #ea580c; margin: 0;">Welcome to Hanzala.co!</h1>
             </div>
             
             <div style="background-color: #f8fafc; padding: 30px; border-radius: 10px; margin-bottom: 30px;">
               <h2 style="color: #1f2937; margin-top: 0;">Thank you for subscribing! 🎊</h2>
               <p style="color: #6b7280; line-height: 1.6; margin-bottom: 20px;">
-                You've successfully joined our newsletter and are now part of the QuickCart family! 
+                You've successfully joined our newsletter and are now part of the Hanzala.co family!
                 Get ready to receive exclusive deals, new product announcements, and special offers directly in your inbox.
               </p>
               
@@ -106,7 +106,7 @@ export async function POST(request) {
             </div>
 
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://quickcart.com'}/all-products" 
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://hanzala.co'}/all-products"
                  style="background-color: #ea580c; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
                 Start Shopping Now
               </a>
@@ -114,22 +114,22 @@ export async function POST(request) {
 
             <div style="text-align: center; padding-top: 20px; border-top: 1px solid #e5e7eb; margin-top: 30px;">
               <p style="color: #9ca3af; font-size: 14px; margin: 0;">
-                You're receiving this email because you subscribed to QuickCart newsletter.
+                You're receiving this email because you subscribed to Hanzala.co newsletter.
               </p>
               <p style="color: #9ca3af; font-size: 12px; margin: 10px 0 0 0;">
-                © ${new Date().getFullYear()} QuickCart. All rights reserved.
+                © ${new Date().getFullYear()} Hanzala.co. All rights reserved.
               </p>
             </div>
           </div>
         `,
-        `Welcome to QuickCart Newsletter!
+        `Welcome to Hanzala.co Newsletter!
         
         Thank you for subscribing to our newsletter! You'll receive exclusive deals and updates.
         
         Enjoy 20% off your first purchase with code: WELCOME20
         Valid for 30 days from subscription.
         
-        Visit: ${process.env.NEXT_PUBLIC_APP_URL || 'https://quickcart.com'}/all-products
+        Visit: ${process.env.NEXT_PUBLIC_APP_URL || 'https://hanzala.co'}/all-products
         `
       );
     } catch (emailError) {

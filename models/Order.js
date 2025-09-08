@@ -66,13 +66,21 @@ const OrderSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    enum: ['cod', 'card', 'upi', 'wallet'],
+    enum: ['cod', 'card', 'upi', 'netbanking', 'wallet'],
     default: 'cod'
   },
   paymentStatus: {
     type: String,
     enum: ['pending', 'completed', 'failed', 'refunded'],
     default: 'pending'
+  },
+  paymentIntentId: {
+    type: String,
+    default: ''
+  },
+  stripeCustomerId: {
+    type: String,
+    default: ''
   },
   orderStatus: {
     type: String,

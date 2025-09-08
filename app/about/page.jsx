@@ -13,7 +13,7 @@ const AboutPage = () => {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
-            About QuickCart
+            About Hanzala.co
           </h1>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Your trusted partner in online shopping, bringing you the best products 
@@ -26,7 +26,7 @@ const AboutPage = () => {
           <div>
             <h2 className="text-3xl font-semibold text-gray-800 mb-6">Our Story</h2>
             <p className="text-gray-600 leading-relaxed mb-4">
-              Founded in 2024, QuickCart emerged from a simple idea: online shopping should be 
+              Founded in 2024, Hanzala.co emerged from a simple idea: online shopping should be
               quick, reliable, and enjoyable. We started as a small team of passionate entrepreneurs 
               who believed that everyone deserves access to quality products without the hassle.
             </p>
@@ -129,7 +129,7 @@ const AboutPage = () => {
               <div className="w-24 h-24 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center">
                 <span className="text-2xl text-white font-bold">QC</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-800">QuickCart Team</h3>
+              <h3 className="text-xl font-semibold text-gray-800">Hanzala.co Team</h3>
               <p className="text-gray-600">Development Team</p>
               <p className="text-sm text-gray-500 mt-2">
                 Dedicated developers building the future of e-commerce

@@ -170,8 +170,8 @@ const ContactPage = () => {
                 <div>
                   <h3 className="text-lg font-semibold text-gray-800">Email Us</h3>
                   <p className="text-gray-600">Get in touch via email</p>
-                  <a href="mailto:support@quickcart.com" className="text-orange-600 hover:text-orange-700 transition">
-                    support@quickcart.com
+                  <a href="mailto:support@hanzala.co" className="text-orange-600 hover:text-orange-700 transition">
+                    support@hanzala.co
                   </a>
                 </div>
               </div>

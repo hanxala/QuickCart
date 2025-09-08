@@ -1,6 +1,7 @@
 import { useAppContext } from "@/context/AppContext";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import PaymentMethodSelector from './PaymentMethodSelector';
 
 const OrderSummary = () => {
 
@@ -9,6 +10,7 @@ const OrderSummary = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [userAddresses, setUserAddresses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('cod');
 
   const fetchUserAddresses = async () => {
     if (!isSignedIn || !userId) return;
@@ -48,6 +50,11 @@ const OrderSummary = () => {
       return;
     }
     
+    if (!selectedPaymentMethod) {
+      toast.error('Please select a payment method');
+      return;
+    }
+    
     if (getCartCount() === 0) {
       toast.error('Your cart is empty');
       return;
@@ -56,8 +63,8 @@ const OrderSummary = () => {
     try {
       setLoading(true);
       
-      // Prepare order items from cart
-      const orderProducts = Object.keys(cartItems)
+      // Prepare order items from cart (matching backend API structure)
+      const orderItems = Object.keys(cartItems)
         .map(productId => {
           const product = products.find(p => p._id === productId);
           if (!product || !product.offerPrice) {
@@ -66,19 +73,15 @@ const OrderSummary = () => {
           }
           return {
             productId,
-            quantity: cartItems[productId],
-            price: product.offerPrice
+            quantity: cartItems[productId]
           };
         })
         .filter(Boolean); // Remove null items
       
-      const totalAmount = getCartAmount() + Math.floor(getCartAmount() * 0.02); // Including tax
-      
       const orderData = {
-        userId,
-        products: orderProducts,
+        items: orderItems,
         address: selectedAddress,
-        totalAmount
+        paymentMethod: selectedPaymentMethod
       };
       
       const response = await fetch('/api/orders', {
@@ -91,15 +94,19 @@ const OrderSummary = () => {
       
       const data = await response.json();
       
-      if (data.success) {
+      if (response.ok && data.success) {
         // Clear cart from localStorage
         localStorage.removeItem('cartItems');
         
         // Redirect to order success page
         router.push('/order-placed');
         toast.success('Order placed successfully!');
+        
+        // Optionally, trigger a cart refresh in the context
+        window.location.reload();
       } else {
-        toast.error(data.error || 'Failed to place order');
+        console.error('Order placement failed:', data);
+        toast.error(data.message || data.error || 'Failed to place order');
       }
     } catch (error) {
       console.error('Error creating order:', error);
@@ -161,6 +168,15 @@ const OrderSummary = () => {
               </ul>
             )}
           </div>
+        </div>
+
+        {/* Payment Method Selection */}
+        <div>
+          <PaymentMethodSelector 
+            selectedMethod={selectedPaymentMethod}
+            onMethodSelect={setSelectedPaymentMethod}
+            orderAmount={getCartAmount() + Math.floor(getCartAmount() * 0.02)}
+          />
         </div>
 
         <div>
