@@ -79,9 +79,18 @@ export async function GET(request) {
 // POST - Send notification to all connected admin clients
 export async function POST(request) {
   try {
-    const auth = await authMiddleware(request);
-    if (auth.error) {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    // Check for internal server-to-server authentication first
+    const internalSecret = request.headers.get('X-Internal-Secret');
+    const isInternalRequest = internalSecret && 
+                             process.env.NOTIFICATIONS_INTERNAL_SECRET && 
+                             internalSecret === process.env.NOTIFICATIONS_INTERNAL_SECRET;
+    
+    // If not internal request, require normal authentication
+    if (!isInternalRequest) {
+      const auth = await authMiddleware(request);
+      if (auth.error) {
+        return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+      }
     }
 
     const { type, title, message, data } = await request.json();
@@ -107,6 +116,8 @@ export async function POST(request) {
       }
     }
 
+    console.log(`📡 Notification broadcast: "${notification.title}" to ${connections.size} admin connection(s)`);
+    
     return NextResponse.json({ 
       success: true, 
       message: 'Notification sent to all connected admins',
