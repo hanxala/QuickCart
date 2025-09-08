@@ -1,11 +1,13 @@
 'use client'
 import { useAppContext } from '@/context/AppContext';
 import { useState } from 'react';
+import { useUser } from '@clerk/nextjs';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
 
 export default function AddProduct() {
   const { userId, router } = useAppContext();
+  const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState([]);
   const [imageUrls, setImageUrls] = useState([]);
@@ -97,9 +99,13 @@ export default function AddProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log('🚀 Form submitted with data:', product);
+    console.log('🖼️ Files selected:', files.length, files.map(f => f.name));
+
     // Validate form
     for (const key in product) {
       if (!product[key] && key !== 'offerPrice') {
+        console.error('❌ Validation failed for field:', key);
         toast.error(`Please enter product ${key}`);
         return;
       }
@@ -131,25 +137,81 @@ export default function AddProduct() {
         return;
       }
 
-      // Create product
-      const response = await fetch('/api/products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...product,
-          userId,
-          image: imageUrls,
-        }),
-      });
-
-      const data = await response.json();
+      // Create product - try main API first, then fallback
+      console.log('📦 Creating product...', product);
+      
+      let response;
+      let data;
+      let usedFallback = false;
+      
+      try {
+        // Try main products API first
+        response = await fetch('/api/products', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...product,
+            userId: userId || user?.id || 'fallback-user',
+            image: imageUrls,
+          }),
+        });
+        
+        data = await response.json();
+        
+        if (!data.success) {
+          console.log('⚠️ Main products API failed, trying fallback...');
+          
+          // Try fallback API
+          response = await fetch('/api/products/fallback', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              ...product,
+              userId: userId || user?.id || 'fallback-user',
+              image: imageUrls,
+            }),
+          });
+          
+          data = await response.json();
+          usedFallback = true;
+        }
+        
+      } catch (error) {
+        console.log('⚠️ Main API error, trying fallback...', error);
+        
+        // Try fallback API on any error
+        try {
+          response = await fetch('/api/products/fallback', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              ...product,
+              userId: userId || user?.id || 'fallback-user',
+              image: imageUrls,
+            }),
+          });
+          
+          data = await response.json();
+          usedFallback = true;
+        } catch (fallbackError) {
+          throw new Error('Both main and fallback APIs failed');
+        }
+      }
 
       if (data.success) {
-        toast.success('Product added successfully');
+        const message = usedFallback 
+          ? 'Product added successfully (using fallback storage)'
+          : 'Product added successfully';
+        toast.success(message);
         router.push('/admin/products');
       } else {
+        console.error('❌ Product creation failed:', data);
         toast.error(data.error || 'Failed to add product');
       }
     } catch (error) {

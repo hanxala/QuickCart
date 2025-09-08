@@ -75,7 +75,7 @@ export default function UserProfileDropdown() {
   };
 
   const handleAdminPanel = () => {
-    router.push('/admin-simple');
+    router.push('/admin');
     setIsOpen(false);
   };
 
