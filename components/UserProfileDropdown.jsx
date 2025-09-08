@@ -16,14 +16,25 @@ export default function UserProfileDropdown() {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    // Check if user is admin
-    const checkAdminStatus = async () => {
+    // Sync user and check admin status
+    const syncAndCheckAdmin = async () => {
       try {
-        const response = await fetch('/api/admin/check-access');
-        const data = await response.json();
-        setIsAdmin(data.isAdmin || false);
+        // First sync the user to ensure they exist in database
+        const syncResponse = await fetch('/api/auth/sync-user', {
+          method: 'POST'
+        });
+        const syncData = await syncResponse.json();
+        
+        if (syncData.success) {
+          setIsAdmin(syncData.isAdmin || false);
+        } else {
+          // Fallback to direct admin check
+          const checkResponse = await fetch('/api/admin/check-access');
+          const checkData = await checkResponse.json();
+          setIsAdmin(checkData.isAdmin || false);
+        }
       } catch (error) {
-        console.error('Error checking admin status:', error);
+        console.error('Error syncing user or checking admin status:', error);
         setIsAdmin(false);
       } finally {
         setLoading(false);
@@ -31,7 +42,7 @@ export default function UserProfileDropdown() {
     };
 
     if (user) {
-      checkAdminStatus();
+      syncAndCheckAdmin();
     } else {
       setLoading(false);
     }
