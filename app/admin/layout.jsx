@@ -23,19 +23,38 @@ export default function AdminLayout({ children }) {
       }
 
       try {
-        const response = await fetch('/api/admin/check-access');
-        const data = await response.json();
+        console.log('🔍 [Admin Layout] Checking admin access for:', user.emailAddresses[0]?.emailAddress);
         
-        if (!data.isAdmin) {
-          router.push('/');
-          return;
+        // First sync the user to ensure they exist in database
+        const syncResponse = await fetch('/api/auth/sync-user', {
+          method: 'POST'
+        });
+        const syncData = await syncResponse.json();
+        
+        console.log('📦 [Admin Layout] Sync response:', syncData);
+        
+        if (syncData.success && syncData.isAdmin) {
+          console.log('✅ [Admin Layout] User is admin via sync');
+          setIsAdmin(true);
+        } else {
+          // Fallback to direct admin check
+          console.log('⚠️ [Admin Layout] Trying direct admin check');
+          const response = await fetch('/api/admin/check-access');
+          const data = await response.json();
+          
+          console.log('🔍 [Admin Layout] Direct admin check response:', data);
+          
+          if (!data.isAdmin) {
+            console.log('❌ [Admin Layout] Access denied, redirecting to home');
+            router.push('/');
+            return;
+          }
+          
+          console.log('✅ [Admin Layout] Admin access granted');
+          setIsAdmin(true);
         }
-        
-        setIsAdmin(true);
       } catch (error) {
-        console.error('Error checking admin access:', error);
-        console.error('Response status:', error.status);
-        console.error('Response data:', error.message);
+        console.error('❌ [Admin Layout] Error checking admin access:', error);
         router.push('/');
       } finally {
         setLoading(false);
