@@ -75,7 +75,7 @@ export default function UserProfileDropdown() {
   };
 
   const handleAdminPanel = () => {
-    router.push('/admin-test');
+    router.push('/admin-simple');
     setIsOpen(false);
   };
 
@@ -128,11 +128,6 @@ export default function UserProfileDropdown() {
               Manage Profile
             </button>
 
-            {/* Debug info - remove this after testing */}
-            <div className="px-4 py-1 text-xs text-gray-400 bg-gray-50">
-              Debug: loading={loading.toString()}, isAdmin={isAdmin.toString()}
-            </div>
-
             {!loading && isAdmin && (
               <button
                 onClick={handleAdminPanel}
@@ -143,14 +138,15 @@ export default function UserProfileDropdown() {
               </button>
             )}
 
-            {/* Temporary always show admin - for debugging */}
-            <button
-              onClick={handleAdminPanel}
-              className="flex items-center w-full px-4 py-2 text-sm text-blue-700 hover:bg-blue-50 transition-colors"
-            >
-              <Cog6ToothIcon className="w-4 h-4 mr-3" />
-              Admin Panel (Debug)
-            </button>
+            {/* Debug option - can be removed later */}
+            {loading && (
+              <div className="px-4 py-2 text-sm text-gray-500">
+                <div className="flex items-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400 mr-2"></div>
+                  Checking admin access...
+                </div>
+              </div>
+            )}
 
             <div className="border-t border-gray-100 my-1"></div>
             

@@ -25,33 +25,34 @@ export default function AdminLayout({ children }) {
       try {
         console.log('🔍 [Admin Layout] Checking admin access for:', user.emailAddresses[0]?.emailAddress);
         
-        // First sync the user to ensure they exist in database
-        const syncResponse = await fetch('/api/auth/sync-user', {
-          method: 'POST'
-        });
-        const syncData = await syncResponse.json();
+        // First try fallback admin check (doesn't require database)
+        const fallbackResponse = await fetch('/api/admin/check-fallback');
+        const fallbackData = await fallbackResponse.json();
         
-        console.log('📦 [Admin Layout] Sync response:', syncData);
+        console.log('📦 [Admin Layout] Fallback response:', fallbackData);
         
-        if (syncData.success && syncData.isAdmin) {
-          console.log('✅ [Admin Layout] User is admin via sync');
+        if (fallbackData.isAdmin) {
+          console.log('✅ [Admin Layout] User is admin via fallback check');
           setIsAdmin(true);
         } else {
-          // Fallback to direct admin check
-          console.log('⚠️ [Admin Layout] Trying direct admin check');
-          const response = await fetch('/api/admin/check-access');
-          const data = await response.json();
+          console.log('⚠️ [Admin Layout] Fallback failed, trying sync');
           
-          console.log('🔍 [Admin Layout] Direct admin check response:', data);
+          // Try sync as backup
+          const syncResponse = await fetch('/api/auth/sync-user', {
+            method: 'POST'
+          });
+          const syncData = await syncResponse.json();
           
-          if (!data.isAdmin) {
+          console.log('📦 [Admin Layout] Sync response:', syncData);
+          
+          if (syncData.success && syncData.isAdmin) {
+            console.log('✅ [Admin Layout] User is admin via sync');
+            setIsAdmin(true);
+          } else {
             console.log('❌ [Admin Layout] Access denied, redirecting to home');
             router.push('/');
             return;
           }
-          
-          console.log('✅ [Admin Layout] Admin access granted');
-          setIsAdmin(true);
         }
       } catch (error) {
         console.error('❌ [Admin Layout] Error checking admin access:', error);
