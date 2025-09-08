@@ -19,22 +19,29 @@ export default function UserProfileDropdown() {
     // Sync user and check admin status
     const syncAndCheckAdmin = async () => {
       try {
+        console.log('🔍 Starting admin check for user:', user?.emailAddresses[0]?.emailAddress);
+        
         // First sync the user to ensure they exist in database
         const syncResponse = await fetch('/api/auth/sync-user', {
           method: 'POST'
         });
         const syncData = await syncResponse.json();
         
+        console.log('📦 Sync response:', syncData);
+        
         if (syncData.success) {
+          console.log('✅ Sync successful, isAdmin:', syncData.isAdmin);
           setIsAdmin(syncData.isAdmin || false);
         } else {
+          console.log('⚠️ Sync failed, trying direct admin check');
           // Fallback to direct admin check
           const checkResponse = await fetch('/api/admin/check-access');
           const checkData = await checkResponse.json();
+          console.log('🔍 Direct admin check response:', checkData);
           setIsAdmin(checkData.isAdmin || false);
         }
       } catch (error) {
-        console.error('Error syncing user or checking admin status:', error);
+        console.error('❌ Error syncing user or checking admin status:', error);
         setIsAdmin(false);
       } finally {
         setLoading(false);
@@ -121,6 +128,11 @@ export default function UserProfileDropdown() {
               Manage Profile
             </button>
 
+            {/* Debug info - remove this after testing */}
+            <div className="px-4 py-1 text-xs text-gray-400 bg-gray-50">
+              Debug: loading={loading.toString()}, isAdmin={isAdmin.toString()}
+            </div>
+
             {!loading && isAdmin && (
               <button
                 onClick={handleAdminPanel}
@@ -130,6 +142,15 @@ export default function UserProfileDropdown() {
                 Admin Panel
               </button>
             )}
+
+            {/* Temporary always show admin - for debugging */}
+            <button
+              onClick={handleAdminPanel}
+              className="flex items-center w-full px-4 py-2 text-sm text-blue-700 hover:bg-blue-50 transition-colors"
+            >
+              <Cog6ToothIcon className="w-4 h-4 mr-3" />
+              Admin Panel (Debug)
+            </button>
 
             <div className="border-t border-gray-100 my-1"></div>
             

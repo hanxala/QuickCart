@@ -7,8 +7,16 @@ const isProtectedRoute = createRouteMatcher([
   '/order-placed(.*)'
 ])
 
+const isAdminRoute = createRouteMatcher([
+  '/admin(.*)'
+])
+
 export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) {
+    await auth.protect();
+  }
+  
+  if (isAdminRoute(req)) {
     await auth.protect();
   }
 })
