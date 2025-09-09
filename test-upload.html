@@ -99,6 +99,7 @@
     
     <div>
         <button onclick="testWithSampleImage()">🧪 Test with Sample Image</button>
+        <button onclick="testFallbackUpload()">🔄 Test Fallback Upload</button>
         <button onclick="clearResults()">🧹 Clear Results</button>
     </div>
     
@@ -176,7 +177,7 @@
             await uploadFile(file);
         }
         
-        async function uploadFile(file) {
+        async function uploadFile(file, useFallback = false) {
             showResult('🔄 Uploading image...', 'loading');
             log('🚀 Starting upload process...');
             
@@ -184,8 +185,9 @@
                 const formData = new FormData();
                 formData.append('file', file);
                 
-                log('📤 Sending request to /api/upload...');
-                const response = await fetch('/api/upload', {
+                const endpoint = useFallback ? '/api/upload-fallback' : '/api/upload';
+                log(`📤 Sending request to ${endpoint}...`);
+                const response = await fetch(endpoint, {
                     method: 'POST',
                     body: formData
                 });
@@ -258,6 +260,33 @@
                 const file = new File([blob], 'test-image.png', { type: 'image/png' });
                 log(`🖼️ Generated test image: ${file.size} bytes`);
                 await uploadFile(file);
+            }, 'image/png');
+        }
+        
+        async function testFallbackUpload() {
+            log('🔄 Testing fallback upload...');
+            
+            // Create a simple test image for fallback testing
+            const canvas = document.createElement('canvas');
+            canvas.width = 100;
+            canvas.height = 100;
+            const ctx = canvas.getContext('2d');
+            
+            // Fill with blue color
+            ctx.fillStyle = '#0000ff';
+            ctx.fillRect(0, 0, 100, 100);
+            
+            // Add some text
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('FALLBACK', 50, 50);
+            
+            // Convert to blob
+            canvas.toBlob(async (blob) => {
+                const file = new File([blob], 'fallback-test.png', { type: 'image/png' });
+                log(`🖼️ Generated fallback test image: ${file.size} bytes`);
+                await uploadFile(file, true); // Use fallback = true
             }, 'image/png');
         }
     </script>

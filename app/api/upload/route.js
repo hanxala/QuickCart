@@ -81,42 +81,35 @@ export async function POST(request) {
       return NextResponse.json(response, { status: 400 });
     }
 
-    console.log('☁️ Testing Cloudinary connection...');
-    
-    // Quick connection test with API ping
-    try {
-      const pingResult = await cloudinary.api.ping();
-      console.log('✅ Cloudinary API connection verified:', pingResult.status);
-    } catch (pingError) {
-      console.error('❌ Cloudinary connection test failed:', pingError);
-      const response = createApiResponse(
-        `Cloudinary service unavailable: ${pingError.message}`,
-        503
-      );
-      return NextResponse.json(response, { status: 503 });
-    }
+    // Skip connection test in production to avoid timeouts
+    console.log('☁️ Proceeding directly to upload...');
     
     console.log('☁️ Uploading to Cloudinary...');
     // Upload to Cloudinary
     const uploadResult = await new Promise((resolve, reject) => {
+      // Set shorter timeout for serverless
+      const uploadTimeout = setTimeout(() => {
+        reject(new Error('Upload timeout - please try again'));
+      }, 25000); // 25 second timeout
+      
       cloudinary.uploader.upload_stream(
         {
           folder: 'quickcart-products',
-          resource_type: 'auto',
+          resource_type: 'image',
           transformation: [
-            { width: 1200, height: 900, crop: 'limit' },
-            { quality: 'auto:good', fetch_format: 'auto' }
+            { width: 800, height: 600, crop: 'limit' },
+            { quality: 'auto:good' }
           ],
-          tags: ['quickcart', 'product'],
-          timeout: 60000 // 60 second timeout
+          tags: ['quickcart', 'product']
         },
         (error, result) => {
+          clearTimeout(uploadTimeout);
+          
           if (error) {
             console.error('❌ Cloudinary upload error details:');
             console.error('Error message:', error.message);
             console.error('Error code:', error.http_code);
             console.error('Error name:', error.name);
-            console.error('Full error object:', JSON.stringify(error, null, 2));
             
             let errorMessage = 'Upload failed';
             if (error.http_code === 401) {

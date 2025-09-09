@@ -91,19 +91,44 @@ export default function AddProduct() {
       const uploadData = new FormData();
       uploadData.append('file', file);
 
-      const response = await fetch('/api/upload', {
+      let response = await fetch('/api/upload', {
         method: 'POST',
         body: uploadData
       });
 
-      const result = await response.json();
+      let result = await response.json();
+
+      // If main upload fails, try fallback
+      if (!response.ok && !result.data) {
+        console.warn('⚠️ Main upload failed, trying fallback...');
+        notify.loading(`🔄 Retrying with fallback method...`, {
+          id: 'image-upload-loading',
+          duration: Infinity,
+        });
+        
+        try {
+          response = await fetch('/api/upload-fallback', {
+            method: 'POST',
+            body: uploadData
+          });
+          result = await response.json();
+        } catch (fallbackError) {
+          console.error('Fallback upload also failed:', fallbackError);
+        }
+      }
+      
       notify.dismiss('image-upload-loading');
 
       if (response.ok && result.data) {
         handleImageChange(index, result.data.url);
-        notify.success('✅ Image uploaded successfully!');
+        if (result.data.isFallback) {
+          notify.success('✅ Image uploaded (using fallback method)!');
+        } else {
+          notify.success('✅ Image uploaded successfully!');
+        }
       } else {
-        notify.error(`❌ Upload failed: ${result.message || 'Unknown error'}`);
+        notify.error(`❌ Upload failed: ${result.message || result.error || 'Unknown error'}`);
+        console.error('Upload error details:', result);
       }
     } catch (error) {
       notify.dismiss('image-upload-loading');
