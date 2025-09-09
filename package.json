@@ -10,7 +10,8 @@
     "seed": "node scripts/seed.js",
     "make-admin": "node scripts/make-admin.js",
     "test-email": "node scripts/test-email.js",
-    "test-db": "node scripts/test-mongodb.js"
+    "test-db": "node scripts/test-mongodb.js",
+    "test-db-prod": "node scripts/test-db-production.js"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.31.9",
