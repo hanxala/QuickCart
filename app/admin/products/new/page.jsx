@@ -5,59 +5,11 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { notify } from '@/lib/notifications';
 
-const categories = [
-  { value: 'Laptop', label: 'Laptop', emoji: '💻' },
-  { value: 'Smartphone', label: 'Smartphone', emoji: '📱' },
-  { value: 'Headphone', label: 'Headphone', emoji: '🎧' },
-  { value: 'Earphone', label: 'Earphone', emoji: '🎵' },
-  { value: 'Camera', label: 'Camera', emoji: '📷' },
-  { value: 'Accessories', label: 'Accessories', emoji: '🔌' }
-];
+import { productCategories, allCategories, productTemplates } from '@/lib/categories';
 
-const productTemplates = {
-  Laptop: {
-    name: '',
-    description: 'High-performance laptop with excellent build quality and modern features.',
-    price: '50000',
-    offerPrice: '45000',
-    stock: '10'
-  },
-  Smartphone: {
-    name: '',
-    description: 'Latest smartphone with advanced camera system and powerful performance.',
-    price: '25000',
-    offerPrice: '22000',
-    stock: '15'
-  },
-  Headphone: {
-    name: '',
-    description: 'Premium wireless headphones with noise cancellation and superior sound quality.',
-    price: '8000',
-    offerPrice: '6500',
-    stock: '20'
-  },
-  Earphone: {
-    name: '',
-    description: 'Comfortable earphones with excellent sound clarity and durable build.',
-    price: '2000',
-    offerPrice: '1500',
-    stock: '25'
-  },
-  Camera: {
-    name: '',
-    description: 'Professional camera with high-resolution imaging and versatile features.',
-    price: '80000',
-    offerPrice: '75000',
-    stock: '5'
-  },
-  Accessories: {
-    name: '',
-    description: 'High-quality accessory for enhanced functionality and user experience.',
-    price: '1000',
-    offerPrice: '800',
-    stock: '30'
-  }
-};
+const categories = allCategories;
+
+// Product templates are now imported from @/lib/categories
 
 export default function AddProduct() {
   const router = useRouter();
@@ -78,17 +30,18 @@ export default function AddProduct() {
 
   // Apply template based on category
   const applyTemplate = (category) => {
-    if (productTemplates[category]) {
-      const template = productTemplates[category];
-      setFormData(prev => ({
-        ...prev,
-        ...template,
-        name: prev.name, // Keep the name if already entered
-        category: category
-      }));
-      notify.success(`✨ Applied ${category} template!`);
-      setShowTemplates(false);
-    }
+    const template = productTemplates[category] || productTemplates['default'];
+    setFormData(prev => ({
+      ...prev,
+      name: prev.name, // Keep the name if already entered
+      description: template.description,
+      price: template.price,
+      offerPrice: template.offerPrice,
+      stock: template.stock,
+      category: category
+    }));
+    notify.success(`✨ Applied ${category} template!`);
+    setShowTemplates(false);
   };
 
   // Enhanced form change handler with validation
@@ -450,10 +403,14 @@ export default function AddProduct() {
                   }`}
                 >
                   <option value="">Select a category</option>
-                  {categories.map(category => (
-                    <option key={category.value} value={category.value}>
-                      {category.emoji} {category.label}
-                    </option>
+                  {productCategories.map(group => (
+                    <optgroup key={group.group} label={group.group}>
+                      {group.items.map(category => (
+                        <option key={category.value} value={category.value}>
+                          {category.emoji} {category.label}
+                        </option>
+                      ))}
+                    </optgroup>
                   ))}
                 </select>
                 {errors.category && (

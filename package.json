@@ -11,7 +11,8 @@
     "make-admin": "node scripts/make-admin.js",
     "test-email": "node scripts/test-email.js",
     "test-db": "node scripts/test-mongodb.js",
-    "test-db-prod": "node scripts/test-db-production.js"
+    "test-db-prod": "node scripts/test-db-production.js",
+    "test-cloudinary": "node scripts/test-cloudinary.js"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.31.9",
