@@ -58,11 +58,44 @@ export async function POST(request) {
     }
 
     console.log('🔄 Converting file to buffer...');
-    // Convert file to buffer
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    console.log(`✅ Buffer created: ${buffer.length} bytes`);
+    
+    // Convert file to buffer with error handling
+    let buffer;
+    try {
+      const bytes = await file.arrayBuffer();
+      buffer = Buffer.from(bytes);
+      console.log(`✅ Buffer created: ${buffer.length} bytes`);
+      
+      // Validate buffer
+      if (buffer.length === 0) {
+        throw new Error('File buffer is empty');
+      }
+      
+      // Check if it looks like an image (basic validation)
+      const fileHeader = buffer.slice(0, 8).toString('hex');
+      console.log(`🔍 File header (hex): ${fileHeader}`);
+      
+    } catch (bufferError) {
+      console.error('❌ Buffer conversion failed:', bufferError);
+      const response = createApiResponse(`File processing failed: ${bufferError.message}`, 400);
+      return NextResponse.json(response, { status: 400 });
+    }
 
+    console.log('☁️ Testing Cloudinary connection...');
+    
+    // Quick connection test with API ping
+    try {
+      const pingResult = await cloudinary.api.ping();
+      console.log('✅ Cloudinary API connection verified:', pingResult.status);
+    } catch (pingError) {
+      console.error('❌ Cloudinary connection test failed:', pingError);
+      const response = createApiResponse(
+        `Cloudinary service unavailable: ${pingError.message}`,
+        503
+      );
+      return NextResponse.json(response, { status: 503 });
+    }
+    
     console.log('☁️ Uploading to Cloudinary...');
     // Upload to Cloudinary
     const uploadResult = await new Promise((resolve, reject) => {
@@ -79,8 +112,26 @@ export async function POST(request) {
         },
         (error, result) => {
           if (error) {
-            console.error('❌ Cloudinary upload error:', error);
-            reject(new Error(`Upload failed: ${error.message || error.toString()}`));
+            console.error('❌ Cloudinary upload error details:');
+            console.error('Error message:', error.message);
+            console.error('Error code:', error.http_code);
+            console.error('Error name:', error.name);
+            console.error('Full error object:', JSON.stringify(error, null, 2));
+            
+            let errorMessage = 'Upload failed';
+            if (error.http_code === 401) {
+              errorMessage = 'Authentication failed - check Cloudinary credentials';
+            } else if (error.http_code === 403) {
+              errorMessage = 'Permission denied - check Cloudinary account limits';
+            } else if (error.http_code === 400) {
+              errorMessage = `Invalid request: ${error.message || 'Bad request'}`;
+            } else if (error.message) {
+              errorMessage = error.message;
+            } else if (typeof error === 'string') {
+              errorMessage = error;
+            }
+            
+            reject(new Error(errorMessage));
           } else {
             console.log('✅ Cloudinary upload successful:', result.public_id);
             resolve(result);

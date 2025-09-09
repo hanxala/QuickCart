@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            width: 100%;
+            height: 200px;
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        .upload-area:hover {
+            border-color: #007cba;
+        }
+        .upload-area.dragover {
+            border-color: #007cba;
+            background-color: #f0f8ff;
+        }
+        #fileInput {
+            display: none;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .log {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        button {
+            background-color: #007cba;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #005a87;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>🖼️ Image Upload Test</h1>
+    <p>Test the image upload functionality of your QuickCart application.</p>
+    
+    <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+        <p>📁 Click here to select an image file</p>
+        <p>or drag and drop an image</p>
+        <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
+    </div>
+    
+    <div>
+        <button onclick="testWithSampleImage()">🧪 Test with Sample Image</button>
+        <button onclick="clearResults()">🧹 Clear Results</button>
+    </div>
+    
+    <div id="result"></div>
+    <div id="log"></div>
+
+    <script>
+        let logContent = '';
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logContent += `[${timestamp}] ${message}\n`;
+            document.getElementById('log').textContent = logContent;
+            console.log(message);
+        }
+        
+        function showResult(message, type = 'success') {
+            const result = document.getElementById('result');
+            result.innerHTML = message;
+            result.className = `result ${type}`;
+        }
+        
+        function clearResults() {
+            document.getElementById('result').innerHTML = '';
+            logContent = '';
+            document.getElementById('log').textContent = '';
+        }
+        
+        // Drag and drop functionality
+        const uploadArea = document.querySelector('.upload-area');
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+        
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+        
+        async function handleFile(file) {
+            log(`📄 Selected file: ${file.name}`);
+            log(`📏 File size: ${file.size} bytes`);
+            log(`🏷️ File type: ${file.type}`);
+            
+            if (!file.type.startsWith('image/')) {
+                showResult('❌ Please select an image file', 'error');
+                log('❌ Invalid file type');
+                return;
+            }
+            
+            if (file.size > 10 * 1024 * 1024) { // 10MB
+                showResult('❌ File too large (max 10MB)', 'error');
+                log('❌ File size exceeds limit');
+                return;
+            }
+            
+            await uploadFile(file);
+        }
+        
+        async function uploadFile(file) {
+            showResult('🔄 Uploading image...', 'loading');
+            log('🚀 Starting upload process...');
+            
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                log('📤 Sending request to /api/upload...');
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                log(`📊 Response status: ${response.status}`);
+                log(`📊 Response headers: ${JSON.stringify(Object.fromEntries(response.headers))}`);
+                
+                const responseText = await response.text();
+                log(`📊 Raw response: ${responseText}`);
+                
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                    log(`📊 Parsed response: ${JSON.stringify(result, null, 2)}`);
+                } catch (parseError) {
+                    log(`❌ Failed to parse response: ${parseError.message}`);
+                    showResult(`❌ Invalid server response: ${responseText}`, 'error');
+                    return;
+                }
+                
+                if (response.ok && result.data) {
+                    log('✅ Upload successful!');
+                    showResult(
+                        `✅ Upload successful!<br>
+                         🖼️ <a href="${result.data.url}" target="_blank">View Image</a><br>
+                         🆔 Public ID: ${result.data.public_id}<br>
+                         📏 Dimensions: ${result.data.width || 'N/A'}x${result.data.height || 'N/A'}<br>
+                         📦 Format: ${result.data.format || 'N/A'}<br>
+                         💾 Size: ${result.data.bytes || 'N/A'} bytes<br>
+                         <img src="${result.data.url}" alt="Uploaded image">`,
+                        'success'
+                    );
+                } else {
+                    log('❌ Upload failed');
+                    showResult(
+                        `❌ Upload failed<br>
+                         Error: ${result.message || result.error || 'Unknown error'}<br>
+                         Status: ${response.status}`,
+                        'error'
+                    );
+                }
+                
+            } catch (error) {
+                log(`❌ Network error: ${error.message}`);
+                showResult(`❌ Network error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testWithSampleImage() {
+            log('🧪 Creating sample test image...');
+            
+            // Create a simple 100x100 red square
+            const canvas = document.createElement('canvas');
+            canvas.width = 100;
+            canvas.height = 100;
+            const ctx = canvas.getContext('2d');
+            
+            // Fill with red color
+            ctx.fillStyle = '#ff0000';
+            ctx.fillRect(0, 0, 100, 100);
+            
+            // Add some text
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('TEST', 50, 50);
+            
+            // Convert to blob
+            canvas.toBlob(async (blob) => {
+                const file = new File([blob], 'test-image.png', { type: 'image/png' });
+                log(`🖼️ Generated test image: ${file.size} bytes`);
+                await uploadFile(file);
+            }, 'image/png');
+        }
+    </script>
+</body>
+</html>
