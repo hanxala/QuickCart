@@ -39,7 +39,7 @@ It provides a complete shopping experience with user authentication, product man
 -   Address management
 -   Admin panel with analytics
 -   Stock management
--   Payment integration ready (Stripe)
+-   Payment integration with Razorpay
 
 ### Tech Stack
 - **Frontend**: Next.js, React, Tailwind CSS
@@ -98,9 +98,10 @@ EMAIL_FROM=your_email@gmail.com
 INNGEST_SIGNING_KEY=your_inngest_signing_key
 INNGEST_EVENT_KEY=your_inngest_event_key
 
-# Stripe (for payments)
-STRIPE_SECRET_KEY=your_stripe_secret_key
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+# Razorpay (for payments)
+NEXT_PUBLIC_RAZORPAY_KEY_ID=your_razorpay_key_id
+RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+RAZORPAY_WEBHOOK_SECRET=your_razorpay_webhook_secret
 ```
 
 ## Installation

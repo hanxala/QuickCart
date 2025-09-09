@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import connectToDatabase from '@/lib/mongodb';
+import dbConnect from '@/lib/database';
 import Address from '@/models/Address';
 
 export async function GET(request, { params }) {
@@ -13,7 +13,7 @@ export async function GET(request, { params }) {
       );
     }
     
-    await connectToDatabase();
+    await dbConnect();
     
     // Fetch user addresses
     const addresses = await Address.find({ userId }).sort({ date: -1 });
@@ -40,7 +40,7 @@ export async function POST(request, { params }) {
       );
     }
     
-    await connectToDatabase();
+    await dbConnect();
     
     // Check if this is the first address (make it default)
     const addressCount = await Address.countDocuments({ userId });

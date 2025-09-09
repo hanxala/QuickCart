@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { authMiddleware, createApiResponse, handleApiError } from '@/middleware/auth';
-import { createPaymentIntent } from '@/lib/stripe';
+import { createRazorpayOrder } from '@/lib/razorpay';
 import dbConnect from '@/lib/database';
 import Product from '@/models/Product';
 
@@ -50,15 +50,21 @@ export async function POST(request) {
     }
 
     // Calculate additional costs
-    const shippingCost = totalAmount > 500 ? 0 : 50; // Free shipping above ₹500
-    const taxAmount = totalAmount * 0.1; // 10% tax
+    const shippingCost = 0; // Free shipping
+    const taxAmount = Math.floor(totalAmount * 0.02); // 2% tax to match frontend
     const finalAmount = totalAmount + shippingCost + taxAmount;
 
-    // Create payment intent with metadata
-    const paymentIntent = await createPaymentIntent({
+    // Generate unique receipt ID (max 40 chars for Razorpay)
+    const timestamp = Date.now().toString().slice(-8); // Last 8 digits
+    const userIdShort = auth.userId.slice(-8); // Last 8 characters of user ID
+    const receiptId = `ord_${userIdShort}_${timestamp}`;
+
+    // Create Razorpay order
+    const razorpayOrder = await createRazorpayOrder({
       amount: finalAmount,
-      currency: 'inr',
-      metadata: {
+      currency: 'INR',
+      receipt: receiptId,
+      notes: {
         userId: auth.userId,
         totalAmount: totalAmount.toString(),
         shippingCost: shippingCost.toString(),
@@ -71,9 +77,10 @@ export async function POST(request) {
     });
 
     const response = createApiResponse({
-      clientSecret: paymentIntent.client_secret,
-      paymentIntentId: paymentIntent.id,
+      orderId: razorpayOrder.id,
       amount: finalAmount,
+      currency: 'INR',
+      receipt: receiptId,
       breakdown: {
         totalAmount,
         shippingCost,
@@ -85,7 +92,7 @@ export async function POST(request) {
     return NextResponse.json(response, { status: 200 });
 
   } catch (error) {
-    console.error('Error creating payment intent:', error);
+    console.error('Error creating Razorpay order:', error);
     const errorResponse = handleApiError(error);
     return NextResponse.json(errorResponse, { status: errorResponse.status });
   }

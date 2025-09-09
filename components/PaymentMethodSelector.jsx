@@ -40,11 +40,12 @@ const PaymentMethodSelector = ({ selectedMethod, onMethodSelect, orderAmount }) 
     {
       id: 'card',
       name: 'Credit/Debit Card',
-      description: 'Pay securely with your credit or debit card',
+      description: 'Pay securely with your credit or debit card (Indian cards only)',
       icon: CreditCardIcon,
       color: 'purple',
       available: true,
-      fees: 0
+      fees: 0,
+      notice: 'International cards are currently not supported. Use Indian cards only.'
     },
     {
       id: 'netbanking',
@@ -142,6 +143,11 @@ const PaymentMethodSelector = ({ selectedMethod, onMethodSelect, orderAmount }) 
                   )}
                 </div>
                 <p className="text-xs text-gray-500 mt-1">{method.description}</p>
+                {method.notice && (
+                  <p className="text-xs text-blue-600 mt-1 font-medium">
+                    ⚠️ {method.notice}
+                  </p>
+                )}
                 {method.fees > 0 && (
                   <p className="text-xs text-orange-600 mt-1">
                     + ₹{method.fees} processing fee
@@ -252,29 +258,40 @@ const PaymentMethodSelector = ({ selectedMethod, onMethodSelect, orderAmount }) 
         </div>
       )}
 
-      {/* Card Payment Form */}
+      {/* Card Payment Form - Razorpay Integration */}
       {showCardForm && selectedMethod === 'card' && (
         <div className="mt-6 p-6 bg-purple-50 border border-purple-200 rounded-lg">
           <h4 className="text-md font-semibold text-purple-900 mb-4 flex items-center">
             <CreditCardIcon className="w-5 h-5 mr-2" />
-            Card Payment (Stripe Integration)
+            Card Payment (Razorpay Integration)
           </h4>
           
-          <div className="text-center py-8">
+          <div className="text-center py-6">
             <CreditCardIcon className="w-16 h-16 text-purple-400 mx-auto mb-4" />
             <p className="text-purple-800 font-medium">Secure Card Payment</p>
             <p className="text-sm text-purple-600 mt-2">
-              Integration with Stripe for secure card payments
+              Integration with Razorpay for secure card payments
             </p>
             <p className="text-xs text-purple-500 mt-2">
               Amount: ₹{orderAmount}
             </p>
             
-            {/* Placeholder for Stripe Elements */}
-            <div className="mt-4 p-4 bg-white rounded border border-purple-200">
-              <p className="text-sm text-gray-600">
-                🔒 Stripe payment form will appear here
-              </p>
+            {/* Razorpay Payment Button */}
+            <div className="mt-6">
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('initiateRazorpayPayment', {
+                  detail: { amount: orderAmount }
+                }))}
+                className="w-full py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+              >
+                Pay ₹{orderAmount} with Razorpay
+              </button>
+              
+              <div className="mt-4 text-xs text-gray-500">
+                <p>🔒 Secured by Razorpay • Test Mode</p>
+                <p className="mt-2">Test Card: 4111 1111 1111 1111</p>
+                <p>CVV: Any 3 digits • Expiry: Any future date</p>
+              </div>
             </div>
           </div>
         </div>

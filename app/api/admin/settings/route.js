@@ -22,7 +22,7 @@ const defaultSettings = {
   general: {
     siteName: 'Hanzala.co',
     siteDescription: 'Premium E-Commerce Platform by Hanzala Khan',
-    siteUrl: 'http://localhost:3000',
+    siteUrl: 'https://hanzalaco.vercel.app',
     currency: 'INR',
     currencySymbol: '₹',
     timezone: 'Asia/Kolkata',
@@ -48,8 +48,9 @@ const defaultSettings = {
     enableCards: true,
     enableNetBanking: false,
     upiId: process.env.UPI_ID || 'merchant@upi',
-    stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY || '',
-    stripeSecretKey: process.env.STRIPE_SECRET_KEY || '',
+    razorpayKeyId: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || '',
+    razorpayKeySecret: process.env.RAZORPAY_KEY_SECRET || '',
+    razorpayWebhookSecret: process.env.RAZORPAY_WEBHOOK_SECRET || '',
     paymentGatewayMode: 'test', // 'test' or 'live'
   },
   shipping: {
@@ -132,7 +133,7 @@ export async function GET(request) {
     }
 
     // Check if user is admin
-    const adminCheckResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/admin/check-access`, {
+    const adminCheckResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'https://hanzalaco.vercel.app'}/api/admin/check-access`, {
       headers: {
         'Authorization': request.headers.get('Authorization') || '',
         'Cookie': request.headers.get('Cookie') || ''
@@ -151,7 +152,8 @@ export async function GET(request) {
       delete publicSettings.email.adminEmailPassword;
     }
     if (publicSettings.payment) {
-      delete publicSettings.payment.stripeSecretKey;
+      delete publicSettings.payment.razorpayKeySecret;
+      delete publicSettings.payment.razorpayWebhookSecret;
     }
 
     return NextResponse.json(createApiResponse(publicSettings), { status: 200 });
@@ -175,7 +177,7 @@ export async function PUT(request) {
     }
 
     // Check if user is admin
-    const adminCheckResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/admin/check-access`, {
+    const adminCheckResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'https://hanzalaco.vercel.app'}/api/admin/check-access`, {
       headers: {
         'Authorization': request.headers.get('Authorization') || '',
         'Cookie': request.headers.get('Cookie') || ''
@@ -209,7 +211,8 @@ export async function PUT(request) {
       delete publicSettings.email.adminEmailPassword;
     }
     if (publicSettings.payment) {
-      delete publicSettings.payment.stripeSecretKey;
+      delete publicSettings.payment.razorpayKeySecret;
+      delete publicSettings.payment.razorpayWebhookSecret;
     }
 
     return NextResponse.json(createApiResponse(publicSettings), { status: 200 });
@@ -233,7 +236,7 @@ export async function POST(request) {
     }
 
     // Check if user is admin
-    const adminCheckResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/admin/check-access`, {
+    const adminCheckResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'https://hanzalaco.vercel.app'}/api/admin/check-access`, {
       headers: {
         'Authorization': request.headers.get('Authorization') || '',
         'Cookie': request.headers.get('Cookie') || ''

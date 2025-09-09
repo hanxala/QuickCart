@@ -74,13 +74,43 @@ const OrderSchema = new mongoose.Schema({
     enum: ['pending', 'completed', 'failed', 'refunded'],
     default: 'pending'
   },
-  paymentIntentId: {
-    type: String,
-    default: ''
-  },
-  stripeCustomerId: {
-    type: String,
-    default: ''
+  paymentInfo: {
+    razorpayOrderId: {
+      type: String,
+      default: ''
+    },
+    razorpayPaymentId: {
+      type: String,
+      default: ''
+    },
+    razorpaySignature: {
+      type: String,
+      default: ''
+    },
+    paymentMethod: {
+      type: String,
+      default: ''
+    },
+    paymentStatus: {
+      type: String,
+      enum: ['pending', 'completed', 'failed', 'refunded'],
+      default: 'pending'
+    },
+    paidAt: {
+      type: Date
+    },
+    failureReason: {
+      type: String,
+      default: ''
+    },
+    receipt: {
+      type: String,
+      default: ''
+    },
+    stockUpdated: {
+      type: Boolean,
+      default: false
+    }
   },
   orderStatus: {
     type: String,

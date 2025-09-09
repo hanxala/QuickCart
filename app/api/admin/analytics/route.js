@@ -16,7 +16,7 @@ export async function GET(request) {
     }
 
     // Check if user is admin
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/admin/check-access`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'https://hanzalaco.vercel.app'}/api/admin/check-access`, {
       headers: {
         'Authorization': request.headers.get('Authorization') || '',
         'Cookie': request.headers.get('Cookie') || ''

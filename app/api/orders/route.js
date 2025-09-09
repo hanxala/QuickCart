@@ -60,7 +60,7 @@ export async function POST(request) {
       return NextResponse.json(response, { status: auth.status });
     }
 
-    const { items, address, paymentMethod = 'cod', paymentIntentId } = await request.json();
+    const { items, address, paymentMethod = 'cod', paymentIntentId, paymentInfo } = await request.json();
 
     if (!items || !items.length || !address) {
       const response = createApiResponse('Items and address are required', 400);
@@ -78,11 +78,11 @@ export async function POST(request) {
         paymentStatus = 'pending'; // Will be updated once UPI payment is verified
         break;
       case 'card':
-        if (!paymentIntentId) {
-          const response = createApiResponse('Payment intent ID is required for card payments', 400);
+        if (!paymentInfo || !paymentInfo.razorpayPaymentId) {
+          const response = createApiResponse('Payment information is required for card payments', 400);
           return NextResponse.json(response, { status: 400 });
         }
-        paymentStatus = 'completed';
+        paymentStatus = paymentInfo.paymentStatus || 'completed';
         break;
       default:
         paymentStatus = 'pending';
@@ -147,7 +147,7 @@ export async function POST(request) {
       address,
       paymentMethod,
       paymentStatus,
-      paymentIntentId: paymentIntentId || '',
+      paymentInfo: paymentInfo || {},
       estimatedDelivery
     });
 
