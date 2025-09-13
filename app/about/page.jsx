@@ -12,10 +12,10 @@ const AboutPage = () => {
       <div className="px-6 md:px-16 lg:px-32 py-12">
         {/* Hero Section */}
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-gray-100 mb-6">
             About Hanzala.co
           </h1>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
             Your trusted partner in online shopping, bringing you the best products 
             at unbeatable prices with lightning-fast delivery.
           </p>
@@ -24,18 +24,18 @@ const AboutPage = () => {
         {/* Story Section */}
         <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
           <div>
-            <h2 className="text-3xl font-semibold text-gray-800 mb-6">Our Story</h2>
-            <p className="text-gray-600 leading-relaxed mb-4">
+            <h2 className="text-3xl font-semibold text-gray-800 dark:text-gray-100 mb-6">Our Story</h2>
+            <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
               Founded in 2024, Hanzala.co emerged from a simple idea: online shopping should be
               quick, reliable, and enjoyable. We started as a small team of passionate entrepreneurs 
               who believed that everyone deserves access to quality products without the hassle.
             </p>
-            <p className="text-gray-600 leading-relaxed mb-4">
+            <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
               Today, we've grown into a comprehensive e-commerce platform serving thousands of 
               customers worldwide, but our core values remain unchanged: customer satisfaction, 
               product quality, and exceptional service.
             </p>
-            <p className="text-gray-600 leading-relaxed">
+            <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
               From electronics to fashion, home essentials to gaming gear, we curate every 
               product with care to ensure you get the best value for your money.
             </p>
@@ -90,23 +90,23 @@ const AboutPage = () => {
         </div>
 
         {/* Stats Section */}
-        <div className="bg-gray-50 rounded-xl p-8 mb-16">
+        <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-8 mb-16 theme-transition">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
-              <h3 className="text-3xl font-bold text-orange-600 mb-2">10K+</h3>
-              <p className="text-gray-600">Happy Customers</p>
+              <h3 className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">10K+</h3>
+              <p className="text-gray-600 dark:text-gray-400">Happy Customers</p>
             </div>
             <div>
-              <h3 className="text-3xl font-bold text-orange-600 mb-2">5K+</h3>
-              <p className="text-gray-600">Products</p>
+              <h3 className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">5K+</h3>
+              <p className="text-gray-600 dark:text-gray-400">Products</p>
             </div>
             <div>
-              <h3 className="text-3xl font-bold text-orange-600 mb-2">50+</h3>
-              <p className="text-gray-600">Cities</p>
+              <h3 className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">50+</h3>
+              <p className="text-gray-600 dark:text-gray-400">Cities</p>
             </div>
             <div>
-              <h3 className="text-3xl font-bold text-orange-600 mb-2">99%</h3>
-              <p className="text-gray-600">Satisfaction Rate</p>
+              <h3 className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">99%</h3>
+              <p className="text-gray-600 dark:text-gray-400">Satisfaction Rate</p>
             </div>
           </div>
         </div>

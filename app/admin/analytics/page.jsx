@@ -17,7 +17,7 @@ import toast from 'react-hot-toast';
 // Simple Chart Components (using CSS-only charts for now)
 const LineChart = ({ data, title, color = "blue" }) => {
   if (!data || data.length === 0) {
-    return <div className="h-64 flex items-center justify-center text-gray-500">No data available</div>;
+    return <div className="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">No data available</div>;
   }
 
   const maxValue = Math.max(...data.map(d => d.value));
@@ -26,7 +26,7 @@ const LineChart = ({ data, title, color = "blue" }) => {
 
   return (
     <div className="h-64 relative">
-      <h3 className="text-lg font-medium text-gray-900 mb-4">{title}</h3>
+      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">{title}</h3>
       <div className="flex items-end justify-between h-48 space-x-2">
         {data.map((item, index) => {
           const height = ((item.value - minValue) / range) * 180 + 20;
@@ -37,7 +37,7 @@ const LineChart = ({ data, title, color = "blue" }) => {
                 style={{ height: `${height}px` }}
                 title={`${item.label}: ${item.value.toLocaleString()}`}
               />
-              <span className="text-xs text-gray-500 mt-2 rotate-45 origin-left">
+              <span className="text-xs text-gray-500 dark:text-gray-400 mt-2 rotate-45 origin-left">
                 {item.label}
               </span>
             </div>
@@ -50,7 +50,7 @@ const LineChart = ({ data, title, color = "blue" }) => {
 
 const PieChart = ({ data, title }) => {
   if (!data || data.length === 0) {
-    return <div className="h-64 flex items-center justify-center text-gray-500">No data available</div>;
+    return <div className="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">No data available</div>;
   }
 
   const total = data.reduce((sum, item) => sum + item.value, 0);
@@ -58,7 +58,7 @@ const PieChart = ({ data, title }) => {
 
   return (
     <div className="h-64">
-      <h3 className="text-lg font-medium text-gray-900 mb-4">{title}</h3>
+      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">{title}</h3>
       <div className="flex items-center justify-between">
         <div className="w-40 h-40 rounded-full relative overflow-hidden">
           {/* Simple pie representation using gradients */}
@@ -69,9 +69,9 @@ const PieChart = ({ data, title }) => {
             <div key={index} className="flex items-center justify-between">
               <div className="flex items-center">
                 <div className={`w-3 h-3 rounded-full ${colors[index % colors.length]} mr-2`} />
-                <span className="text-sm text-gray-700">{item.label}</span>
+                <span className="text-sm text-gray-700 dark:text-gray-300">{item.label}</span>
               </div>
-              <div className="text-sm font-medium text-gray-900">
+              <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                 {item.value} ({((item.value / total) * 100).toFixed(1)}%)
               </div>
             </div>
@@ -139,13 +139,13 @@ export default function AnalyticsPage() {
   if (loading) {
     return (
       <div className="animate-pulse">
-        <div className="h-8 bg-gray-200 rounded w-64 mb-6"></div>
+        <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-64 mb-6"></div>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-white overflow-hidden shadow rounded-lg">
+            <div key={i} className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
               <div className="p-5">
-                <div className="h-6 bg-gray-200 rounded mb-2"></div>
-                <div className="h-8 bg-gray-200 rounded"></div>
+                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded"></div>
               </div>
             </div>
           ))}
@@ -157,9 +157,9 @@ export default function AnalyticsPage() {
   if (!data) {
     return (
       <div className="text-center py-12">
-        <ChartBarIcon className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No Analytics Data</h3>
-        <p className="text-gray-500">Unable to load analytics data at this time.</p>
+        <ChartBarIcon className="mx-auto h-16 w-16 text-gray-400 dark:text-gray-500 mb-4" />
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No Analytics Data</h3>
+        <p className="text-gray-500 dark:text-gray-400">Unable to load analytics data at this time.</p>
       </div>
     );
   }
@@ -220,19 +220,19 @@ export default function AnalyticsPage() {
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Analytics Dashboard</h1>
-          <p className="mt-2 text-sm text-gray-600">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Analytics Dashboard</h1>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Comprehensive insights into your store's performance
           </p>
         </div>
         <div className="mt-4 lg:mt-0 flex items-center space-x-4">
-          <div className="flex items-center text-sm text-gray-500">
+          <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
             <ClockIcon className="w-4 h-4 mr-1" />
             Last updated: {formatTimeAgo(lastUpdated)}
           </div>
           <button 
             onClick={() => fetchAnalytics()}
-            className="text-sm text-blue-600 hover:text-blue-800"
+            className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
           >
             Refresh
           </button>
@@ -240,18 +240,18 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Time Range Selector */}
-      <div className="bg-white rounded-lg shadow p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 theme-transition">
         <div className="flex items-center space-x-4">
-          <CalendarDaysIcon className="w-5 h-5 text-gray-400" />
-          <span className="text-sm font-medium text-gray-700">Time Range:</span>
+          <CalendarDaysIcon className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Time Range:</span>
           {['7d', '30d', '90d', '1y'].map((range) => (
             <button
               key={range}
               onClick={() => handleTimeRangeChange(range)}
               className={`px-3 py-1 text-sm rounded-md transition ${
                 timeRange === range
-                  ? 'bg-blue-100 text-blue-700 font-medium'
-                  : 'text-gray-600 hover:bg-gray-100'
+                  ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-medium'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
               }`}
             >
               {range === '7d' && 'Last 7 Days'}
@@ -269,10 +269,10 @@ export default function AnalyticsPage() {
           {data.alerts.map((alert, index) => (
             <div 
               key={index} 
-              className={`p-4 rounded-lg border-l-4 ${
+              className={`p-4 rounded-lg border-l-4 theme-transition ${
                 alert.type === 'warning' 
-                  ? 'bg-yellow-50 border-yellow-400 text-yellow-800'
-                  : 'bg-red-50 border-red-400 text-red-800'
+                  ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-400 text-yellow-800 dark:text-yellow-200'
+                  : 'bg-red-50 dark:bg-red-900/20 border-red-400 text-red-800 dark:text-red-200'
               }`}
             >
               <div className="flex items-center">
@@ -290,34 +290,34 @@ export default function AnalyticsPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
-          <div key={stat.name} className="bg-white overflow-hidden shadow-lg rounded-lg hover:shadow-xl transition-shadow">
+          <div key={stat.name} className="card overflow-hidden shadow-lg rounded-lg hover:shadow-xl transition-shadow">
             <div className="p-5">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <stat.icon className={`h-6 w-6 text-${stat.color}-500`} aria-hidden="true" />
+                  <stat.icon className={`h-6 w-6 text-${stat.color}-500 dark:text-${stat.color}-400`} aria-hidden="true" />
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">{stat.name}</dt>
-                    <dd className="text-lg font-semibold text-gray-900">{stat.value}</dd>
+                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{stat.name}</dt>
+                    <dd className="text-lg font-semibold text-gray-900 dark:text-gray-100">{stat.value}</dd>
                   </dl>
                 </div>
               </div>
             </div>
             {stat.changeType !== 'neutral' && (
-              <div className="bg-gray-50 px-5 py-3">
+              <div className="bg-gray-50 dark:bg-gray-700/50 px-5 py-3 theme-transition">
                 <div className="flex items-center text-sm">
                   {stat.changeType === 'increase' ? (
-                    <ArrowTrendingUpIcon className="w-4 h-4 text-green-500 mr-1" />
+                    <ArrowTrendingUpIcon className="w-4 h-4 text-green-500 dark:text-green-400 mr-1" />
                   ) : (
-                    <ArrowTrendingDownIcon className="w-4 h-4 text-red-500 mr-1" />
+                    <ArrowTrendingDownIcon className="w-4 h-4 text-red-500 dark:text-red-400 mr-1" />
                   )}
                   <span className={`font-medium ${
-                    stat.changeType === 'increase' ? 'text-green-600' : 'text-red-600'
+                    stat.changeType === 'increase' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
                   }`}>
                     {Math.abs(stat.change).toFixed(1)}%
                   </span>
-                  <span className="text-gray-500 ml-1">vs previous period</span>
+                  <span className="text-gray-500 dark:text-gray-400 ml-1">vs previous period</span>
                 </div>
               </div>
             )}
@@ -328,7 +328,7 @@ export default function AnalyticsPage() {
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Sales Trends */}
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="card p-6 rounded-lg shadow">
           <LineChart 
             data={salesTrendsData}
             title="Revenue Trends" 
@@ -337,7 +337,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Order Status Distribution */}
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="card p-6 rounded-lg shadow">
           <PieChart 
             data={orderStatusData}
             title="Order Status Distribution" 
@@ -345,7 +345,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Payment Methods */}
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="card p-6 rounded-lg shadow">
           <PieChart 
             data={paymentMethodData}
             title="Payment Methods" 
@@ -353,18 +353,18 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Top Products */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Top Selling Products</h3>
+        <div className="card p-6 rounded-lg shadow">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Top Selling Products</h3>
           <div className="space-y-3">
             {data.topProducts.slice(0, 5).map((product, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded">
+              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded theme-transition">
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">{product.name}</p>
-                  <p className="text-xs text-gray-500">{product.category}</p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{product.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{product.category}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-medium text-gray-900">{product.totalSold} sold</p>
-                  <p className="text-xs text-gray-500">{formatCurrency(product.revenue)}</p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{product.totalSold} sold</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{formatCurrency(product.revenue)}</p>
                 </div>
               </div>
             ))}
@@ -375,29 +375,29 @@ export default function AnalyticsPage() {
       {/* Recent Orders & Low Stock */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Orders */}
-        <div className="bg-white rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">Recent Orders</h3>
+        <div className="card rounded-lg shadow">
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Recent Orders</h3>
           </div>
-          <div className="divide-y divide-gray-200">
+          <div className="divide-y divide-gray-200 dark:divide-gray-700">
             {data.recentOrders.map((order) => (
-              <div key={order._id} className="p-4 hover:bg-gray-50">
+              <div key={order._id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 theme-transition">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">{order.customerName}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{order.customerName}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {order.items} items • {formatCurrency(order.amount)}
                     </p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-gray-400 dark:text-gray-500">
                       {formatTimeAgo(order.createdAt)}
                     </p>
                   </div>
                   <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
                     order.status === 'Order Placed' 
-                      ? 'bg-blue-100 text-blue-800'
+                      ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300'
                       : order.status === 'Processing'
-                      ? 'bg-yellow-100 text-yellow-800'
-                      : 'bg-green-100 text-green-800'
+                      ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300'
+                      : 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300'
                   }`}>
                     {order.status}
                   </span>
@@ -408,24 +408,24 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Low Stock Products */}
-        <div className="bg-white rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">Low Stock Alert</h3>
+        <div className="card rounded-lg shadow">
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Low Stock Alert</h3>
           </div>
-          <div className="divide-y divide-gray-200">
+          <div className="divide-y divide-gray-200 dark:divide-gray-700">
             {data.lowStockProducts.length > 0 ? (
               data.lowStockProducts.map((product) => (
-                <div key={product._id} className="p-4 hover:bg-gray-50">
+                <div key={product._id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 theme-transition">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">{product.name}</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{product.name}</p>
                     </div>
                     <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
                       product.stock === 0 
-                        ? 'bg-red-100 text-red-800'
+                        ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
                         : product.stock <= 5
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : 'bg-green-100 text-green-800'
+                        ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300'
+                        : 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300'
                     }`}>
                       {product.stock} left
                     </span>
@@ -433,7 +433,7 @@ export default function AnalyticsPage() {
                 </div>
               ))
             ) : (
-              <div className="p-4 text-center text-gray-500">
+              <div className="p-4 text-center text-gray-500 dark:text-gray-400">
                 <p>All products have sufficient stock</p>
               </div>
             )}

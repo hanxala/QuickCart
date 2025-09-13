@@ -7,13 +7,132 @@
 }
 
 @layer base {
+    /* CSS Custom Properties for Theme */
+    :root {
+      --background: #ffffff;
+      --foreground: #374151;
+      --card-bg: #ffffff;
+      --card-border: #e5e7eb;
+      --input-bg: #ffffff;
+      --input-border: #d1d5db;
+      --toast-bg: #ffffff;
+      --toast-color: #000000;
+      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    }
+    
+    .dark {
+      --background: #111827;
+      --foreground: #d1d5db;
+      --card-bg: #1f2937;
+      --card-border: #374151;
+      --input-bg: #374151;
+      --input-border: #4b5563;
+      --toast-bg: #1f2937;
+      --toast-color: #ffffff;
+      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3);
+    }
+    
+    /* Base styles */
+    html {
+      color-scheme: light;
+    }
+    
+    html.dark {
+      color-scheme: dark;
+    }
+    
+    body {
+      background-color: var(--background);
+      color: var(--foreground);
+    }
+    
+    /* Input number styles */
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
-  }
+    
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+}
 
+@layer components {
+  /* Card component styles */
+  .card {
+    @apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm;
+  }
+  
+  /* Button variants */
+  .btn-primary {
+    @apply bg-orange-500 hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+  
+  /* Input styles */
+  .input {
+    @apply bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-orange-400 focus:border-transparent;
+  }
+  
+  /* Link styles */
+  .link {
+    @apply text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 transition-colors duration-200;
+  }
+}
+
+/* Scrollbar styles */
 ::-webkit-scrollbar {
-  display: none;
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-500;
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { 
+    transform: translateY(-10px); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateY(0); 
+    opacity: 1; 
+  }
+}
+
+@keyframes slideUp {
+  from { 
+    transform: translateY(10px); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateY(0); 
+    opacity: 1; 
+  }
+}
+
+/* Theme transition */
+.theme-transition {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }

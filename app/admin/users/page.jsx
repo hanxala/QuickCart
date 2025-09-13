@@ -84,19 +84,19 @@ export default function AdminUsers() {
   const getRoleBadgeColor = (role) => {
     switch (role) {
       case 'admin':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300';
     }
   };
 
   if (loading) {
     return (
       <div className="animate-pulse">
-        <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
+        <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-4"></div>
         <div className="space-y-4">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-20 bg-gray-200 rounded"></div>
+            <div key={i} className="h-20 bg-gray-200 dark:bg-gray-700 rounded"></div>
           ))}
         </div>
       </div>
@@ -106,8 +106,8 @@ export default function AdminUsers() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Users Management</h1>
-        <p className="mt-2 text-sm text-gray-600">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Users Management</h1>
+        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
           Manage user accounts, roles, and permissions.
         </p>
       </div>
@@ -118,20 +118,20 @@ export default function AdminUsers() {
           placeholder="Search users..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
 
-      <div className="bg-white shadow overflow-hidden sm:rounded-md">
+      <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md">
         {filteredUsers.length === 0 ? (
           <div className="text-center py-12">
-            <UserIcon className="mx-auto h-12 w-12 text-gray-400" />
-            <p className="mt-2 text-sm text-gray-500">No users found.</p>
+            <UserIcon className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">No users found.</p>
           </div>
         ) : (
-          <ul className="divide-y divide-gray-200">
+          <ul className="divide-y divide-gray-200 dark:divide-gray-700">
             {filteredUsers.map((user) => (
-              <li key={user._id} className="px-6 py-4">
+              <li key={user._id} className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 theme-transition">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 h-12 w-12">
@@ -144,28 +144,28 @@ export default function AdminUsers() {
                           height={48}
                         />
                       ) : (
-                        <div className="h-12 w-12 rounded-full bg-gray-300 flex items-center justify-center">
-                          <UserIcon className="h-6 w-6 text-gray-600" />
+                        <div className="h-12 w-12 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                          <UserIcon className="h-6 w-6 text-gray-600 dark:text-gray-300" />
                         </div>
                       )}
                     </div>
                     <div className="ml-4">
                       <div className="flex items-center">
-                        <div className="text-lg font-medium text-gray-900">
+                        <div className="text-lg font-medium text-gray-900 dark:text-gray-100">
                           {user.name}
                         </div>
                         {user.role === 'admin' && (
-                          <ShieldCheckIcon className="ml-2 h-5 w-5 text-red-500" />
+                          <ShieldCheckIcon className="ml-2 h-5 w-5 text-red-500 dark:text-red-400" />
                         )}
                       </div>
-                      <div className="text-sm text-gray-500">{user.email}</div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">{user.email}</div>
                       <div className="flex items-center mt-1">
                         <span
                           className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getRoleBadgeColor(user.role)}`}
                         >
                           {user.role}
                         </span>
-                        <span className="ml-2 text-xs text-gray-500">
+                        <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
                           Joined: {new Date(user.createdAt).toLocaleDateString()}
                         </span>
                       </div>
@@ -174,11 +174,11 @@ export default function AdminUsers() {
                   
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center">
-                      <label className="text-sm text-gray-700 mr-2">Role:</label>
+                      <label className="text-sm text-gray-700 dark:text-gray-300 mr-2">Role:</label>
                       <select
                         value={user.role}
                         onChange={(e) => handleRoleChange(user._id, e.target.value)}
-                        className="text-sm border border-gray-300 rounded-md px-2 py-1"
+                        className="text-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md px-2 py-1"
                       >
                         <option value="customer">Customer</option>
                         <option value="admin">Admin</option>
@@ -188,10 +188,10 @@ export default function AdminUsers() {
                     <div className="flex items-center">
                       <button
                         onClick={() => handleToggleActive(user._id, user.isActive)}
-                        className={`px-3 py-1 text-xs rounded-full font-medium ${ 
+                        className={`px-3 py-1 text-xs rounded-full font-medium transition ${ 
                           user.isActive 
-                            ? 'bg-green-100 text-green-800 hover:bg-green-200' 
-                            : 'bg-red-100 text-red-800 hover:bg-red-200'
+                            ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50' 
+                            : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50'
                         }`}
                       >
                         {user.isActive ? 'Active' : 'Inactive'}

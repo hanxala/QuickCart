@@ -34,11 +34,11 @@ const Product = () => {
         <div className="px-6 md:px-16 lg:px-32 pt-14 space-y-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
                 <div className="px-5 lg:px-16 xl:px-20">
-                    <div className="rounded-lg overflow-hidden bg-gray-500/10 mb-4">
+                    <div className="rounded-lg overflow-hidden bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 mb-4 p-4">
                         <Image
                             src={getValidImageUrl(mainImage || productData.image[0])}
-                            alt="alt"
-                            className="w-full h-auto object-cover mix-blend-multiply"
+                            alt={productData.name}
+                            className="w-full h-auto object-cover rounded-md"
                             width={1280}
                             height={720}
                         />
@@ -49,12 +49,12 @@ const Product = () => {
                             <div
                                 key={index}
                                 onClick={() => setMainImage(image)}
-                                className="cursor-pointer rounded-lg overflow-hidden bg-gray-500/10"
+                                className="cursor-pointer rounded-lg overflow-hidden bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 p-2 hover:border-orange-300 dark:hover:border-orange-500 transition"
                             >
                                 <Image
                                     src={getValidImageUrl(image)}
-                                    alt="alt"
-                                    className="w-full h-auto object-cover mix-blend-multiply"
+                                    alt={`${productData.name} image ${index + 1}`}
+                                    className="w-full h-auto object-cover rounded"
                                     width={1280}
                                     height={720}
                                 />
@@ -65,7 +65,7 @@ const Product = () => {
                 </div>
 
                 <div className="flex flex-col">
-                    <h1 className="text-3xl font-medium text-gray-800/90 mb-4">
+                    <h1 className="text-3xl font-medium text-gray-800 dark:text-gray-100 mb-4">
                         {productData.name}
                     </h1>
                     <div className="flex items-center gap-2">
@@ -80,32 +80,32 @@ const Product = () => {
                                 alt="star_dull_icon"
                             />
                         </div>
-                        <p>(4.5)</p>
+                        <p className="text-gray-600 dark:text-gray-400">(4.5)</p>
                     </div>
-                    <p className="text-gray-600 mt-3">
+                    <p className="text-gray-600 dark:text-gray-400 mt-3 leading-relaxed">
                         {productData.description}
                     </p>
-                    <p className="text-3xl font-medium mt-6">
+                    <p className="text-3xl font-medium mt-6 text-gray-900 dark:text-gray-100">
                         ₹{productData.offerPrice}
-                        <span className="text-base font-normal text-gray-800/60 line-through ml-2">
+                        <span className="text-base font-normal text-gray-500 dark:text-gray-400 line-through ml-2">
                             ₹{productData.price}
                         </span>
                     </p>
-                    <hr className="bg-gray-600 my-6" />
+                    <hr className="border-gray-300 dark:border-gray-600 my-6" />
                     <div className="overflow-x-auto">
                         <table className="table-auto border-collapse w-full max-w-72">
                             <tbody>
                                 <tr>
-                                    <td className="text-gray-600 font-medium">Brand</td>
-                                    <td className="text-gray-800/50 ">Generic</td>
+                                    <td className="text-gray-600 dark:text-gray-400 font-medium py-1">Brand</td>
+                                    <td className="text-gray-500 dark:text-gray-500 py-1">Generic</td>
                                 </tr>
                                 <tr>
-                                    <td className="text-gray-600 font-medium">Color</td>
-                                    <td className="text-gray-800/50 ">Multi</td>
+                                    <td className="text-gray-600 dark:text-gray-400 font-medium py-1">Color</td>
+                                    <td className="text-gray-500 dark:text-gray-500 py-1">Multi</td>
                                 </tr>
                                 <tr>
-                                    <td className="text-gray-600 font-medium">Category</td>
-                                    <td className="text-gray-800/50">
+                                    <td className="text-gray-600 dark:text-gray-400 font-medium py-1">Category</td>
+                                    <td className="text-gray-500 dark:text-gray-500 py-1">
                                         {productData.category}
                                     </td>
                                 </tr>
@@ -114,10 +114,10 @@ const Product = () => {
                     </div>
 
                     <div className="flex items-center mt-10 gap-4">
-                        <button onClick={() => addToCart(productData._id)} className="w-full py-3.5 bg-gray-100 text-gray-800/80 hover:bg-gray-200 transition">
+                        <button onClick={() => addToCart(productData._id)} className="w-full py-3.5 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition rounded-lg font-medium">
                             Add to Cart
                         </button>
-                        <button onClick={() => { addToCart(productData._id); router.push('/cart') }} className="w-full py-3.5 bg-orange-500 text-white hover:bg-orange-600 transition">
+                        <button onClick={() => { addToCart(productData._id); router.push('/cart') }} className="w-full py-3.5 bg-orange-500 dark:bg-orange-600 text-white hover:bg-orange-600 dark:hover:bg-orange-500 transition rounded-lg font-medium">
                             Buy now
                         </button>
                     </div>
@@ -125,13 +125,13 @@ const Product = () => {
             </div>
             <div className="flex flex-col items-center">
                 <div className="flex flex-col items-center mb-4 mt-16">
-                    <p className="text-3xl font-medium">Featured <span className="font-medium text-orange-600">Products</span></p>
-                    <div className="w-28 h-0.5 bg-orange-600 mt-2"></div>
+                    <p className="text-3xl font-medium text-gray-900 dark:text-gray-100">Featured <span className="font-medium text-orange-600 dark:text-orange-400">Products</span></p>
+                    <div className="w-28 h-0.5 bg-orange-600 dark:bg-orange-400 mt-2"></div>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6 pb-14 w-full">
                     {products.slice(0, 5).map((product, index) => <ProductCard key={index} product={product} />)}
                 </div>
-                <button className="px-8 py-2 mb-16 border rounded text-gray-500/70 hover:bg-slate-50/90 transition">
+                <button className="px-8 py-2 mb-16 border border-gray-300 dark:border-gray-600 rounded text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 transition">
                     See more
                 </button>
             </div>

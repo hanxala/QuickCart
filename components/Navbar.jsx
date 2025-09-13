@@ -66,24 +66,24 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="flex items-center justify-between px-6 md:px-16 lg:px-32 py-3 border-b border-gray-300 text-gray-700">
+    <nav className="flex items-center justify-between px-6 md:px-16 lg:px-32 py-3 border-b border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 theme-transition">
       <Image
-        className="cursor-pointer w-28 md:w-32"
+        className="cursor-pointer w-28 md:w-32 dark:brightness-0 dark:invert dark:hue-rotate-180 transition-all duration-300"
         onClick={() => router.push('/')}
         src={assets.logo}
         alt="logo"
       />
       <div className="flex items-center gap-4 lg:gap-8 max-md:hidden">
-        <Link href="/" className="hover:text-gray-900 transition">
+        <Link href="/" className="hover:text-gray-900 dark:hover:text-white transition">
           Home
         </Link>
-        <Link href="/all-products" className="hover:text-gray-900 transition">
+        <Link href="/all-products" className="hover:text-gray-900 dark:hover:text-white transition">
           Shop
         </Link>
-        <Link href="/about" className="hover:text-gray-900 transition">
+        <Link href="/about" className="hover:text-gray-900 dark:hover:text-white transition">
           About Us
         </Link>
-        <Link href="/contact" className="hover:text-gray-900 transition">
+        <Link href="/contact" className="hover:text-gray-900 dark:hover:text-white transition">
           Contact
         </Link>
       </div>
@@ -95,25 +95,25 @@ const Navbar = () => {
             onClick={() => setShowSearch(!showSearch)}
             className="hover:opacity-70 transition"
           >
-            <Image className="w-4 h-4" src={assets.search_icon} alt="search icon" />
+            <Image className="w-4 h-4 dark:brightness-200" src={assets.search_icon} alt="search icon" />
           </button>
           
           {showSearch && (
-            <div className="absolute top-8 right-0 bg-white border rounded-lg shadow-lg p-4 w-80 z-50">
+            <div className="absolute top-8 right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-xl dark:shadow-gray-900/50 p-4 w-80 z-50 theme-transition animate-slide-down">
               <form onSubmit={handleSearchSubmit}>
                 <input
                   type="text"
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={(e) => handleSearch(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="input"
                   autoFocus
                 />
               </form>
               
               {searchResults.length > 0 && (
                 <div className="mt-3 max-h-60 overflow-y-auto">
-                  <p className="text-sm text-gray-500 mb-2">Quick Results:</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Quick Results:</p>
                   {searchResults.map((product) => (
                     <div 
                       key={product._id}
@@ -123,7 +123,7 @@ const Navbar = () => {
                         setSearchQuery('');
                         setSearchResults([]);
                       }}
-                      className="flex items-center gap-3 p-2 hover:bg-gray-50 cursor-pointer rounded"
+                      className="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer rounded theme-transition"
                     >
                       <Image 
                         src={getValidImageUrl(product.image, 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNiAxNkMyMC40MTgzIDE2IDI0IDE5LjU4MTcgMjQgMjRDMjQgMjguNDE4MyAyMC40MTgzIDMyIDE2IDMyQzExLjU4MTcgMzIgOCAyOC40MTgzIDggMjRDOCAxOS41ODE3IDExLjU4MTcgMTYgMTYgMTZaIiBmaWxsPSIjOUI5QjlCIi8+CjxwYXRoIGQ9Ik0xNiAyNEMxNi44ODQgMjQgMTcuNiAyMy4zMjggMTcuNiAyMi40QzE3LjYgMjEuNDcyIDE2Ljg4NCAyMC44IDE2IDIwLjhDMTUuMTE2IDIwLjggMTQuNCAyMS40NzIgMTQuNCAyMi40QzE0NCAyMy4zMjggMTUuMTE2IDI0IDE2IDI0WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+')}
@@ -133,14 +133,14 @@ const Navbar = () => {
                         className="rounded object-cover"
                       />
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-800 truncate">{product.name}</p>
-                        <p className="text-xs text-gray-500">₹{product.offerPrice}</p>
+                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{product.name}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">₹{product.offerPrice}</p>
                       </div>
                     </div>
                   ))}
                   <button 
                     onClick={handleSearchSubmit}
-                    className="w-full mt-2 px-3 py-2 text-sm bg-orange-600 text-white rounded hover:bg-orange-700 transition"
+                    className="btn-primary w-full mt-2 text-sm"
                   >
                     View all results
                   </button>
@@ -148,18 +148,19 @@ const Navbar = () => {
               )}
               
               {searchQuery && searchResults.length === 0 && (
-                <p className="text-sm text-gray-500 mt-3">No products found</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-3">No products found</p>
               )}
             </div>
           )}
         </div>
         
+        
         {/* Cart Icon */}
         {isSignedIn && (
           <Link href="/cart" className="relative">
-            <Image src={assets.cart_icon} alt="cart icon" className="w-5 h-5" />
+            <Image src={assets.cart_icon} alt="cart icon" className="w-5 h-5 dark:brightness-200" />
             {getCartCount() > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="absolute -top-2 -right-2 bg-red-500 dark:bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 {getCartCount()}
               </span>
             )}
@@ -172,12 +173,12 @@ const Navbar = () => {
         ) : (
           <div className="flex items-center gap-2">
             <SignInButton>
-              <button className="text-sm hover:text-gray-900 transition">
+              <button className="text-sm hover:text-gray-900 dark:hover:text-white transition">
                 Sign In
               </button>
             </SignInButton>
             <SignUpButton>
-              <button className="text-sm bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition">
+              <button className="text-sm bg-black dark:bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-800 dark:hover:bg-gray-700 transition">
                 Sign Up
               </button>
             </SignUpButton>
@@ -190,9 +191,9 @@ const Navbar = () => {
         {/* Mobile Cart */}
         {isSignedIn && (
           <Link href="/cart" className="relative">
-            <Image src={assets.cart_icon} alt="cart icon" className="w-5 h-5" />
+            <Image src={assets.cart_icon} alt="cart icon" className="w-5 h-5 dark:brightness-200" />
             {getCartCount() > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="absolute -top-2 -right-2 bg-red-500 dark:bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 {getCartCount()}
               </span>
             )}
@@ -207,45 +208,46 @@ const Navbar = () => {
         {/* Hamburger Menu Button */}
         <button 
           onClick={() => setShowMobileNav(!showMobileNav)}
-          className="p-2 hover:bg-gray-100 rounded-lg transition"
+          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
           aria-label="Toggle menu"
         >
           <div className="w-6 h-6 flex flex-col justify-center items-center">
-            <span className={`bg-gray-700 block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm ${showMobileNav ? 'rotate-45 translate-y-1' : '-translate-y-0.5'}`}></span>
-            <span className={`bg-gray-700 block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm my-0.5 ${showMobileNav ? 'opacity-0' : 'opacity-100'}`}></span>
-            <span className={`bg-gray-700 block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm ${showMobileNav ? '-rotate-45 -translate-y-1' : 'translate-y-0.5'}`}></span>
+            <span className={`bg-gray-700 dark:bg-gray-300 block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm ${showMobileNav ? 'rotate-45 translate-y-1' : '-translate-y-0.5'}`}></span>
+            <span className={`bg-gray-700 dark:bg-gray-300 block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm my-0.5 ${showMobileNav ? 'opacity-0' : 'opacity-100'}`}></span>
+            <span className={`bg-gray-700 dark:bg-gray-300 block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm ${showMobileNav ? '-rotate-45 -translate-y-1' : 'translate-y-0.5'}`}></span>
           </div>
         </button>
         
         {/* Mobile Navigation Menu */}
         {showMobileNav && (
-          <div className="absolute top-16 right-0 bg-white border rounded-lg shadow-xl p-6 w-64 z-50">
+          <div className="absolute top-16 right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl p-6 w-64 z-50 theme-transition animate-slide-down">
             <div className="flex flex-col space-y-4">
+              
               <Link 
                 href="/" 
                 onClick={() => setShowMobileNav(false)}
-                className="text-gray-700 hover:text-orange-600 font-medium py-2 border-b border-gray-100 transition"
+                className="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium py-2 border-b border-gray-100 dark:border-gray-700 transition"
               >
                 Home
               </Link>
               <Link 
                 href="/all-products" 
                 onClick={() => setShowMobileNav(false)}
-                className="text-gray-700 hover:text-orange-600 font-medium py-2 border-b border-gray-100 transition"
+                className="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium py-2 border-b border-gray-100 dark:border-gray-700 transition"
               >
                 Shop
               </Link>
               <Link 
                 href="/about" 
                 onClick={() => setShowMobileNav(false)}
-                className="text-gray-700 hover:text-orange-600 font-medium py-2 border-b border-gray-100 transition"
+                className="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium py-2 border-b border-gray-100 dark:border-gray-700 transition"
               >
                 About Us
               </Link>
               <Link 
                 href="/contact" 
                 onClick={() => setShowMobileNav(false)}
-                className="text-gray-700 hover:text-orange-600 font-medium py-2 border-b border-gray-100 transition"
+                className="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium py-2 border-b border-gray-100 dark:border-gray-700 transition"
               >
                 Contact
               </Link>
@@ -255,7 +257,7 @@ const Navbar = () => {
                   <SignInButton>
                     <button 
                       onClick={() => setShowMobileNav(false)}
-                      className="w-full text-center py-2 text-gray-700 hover:text-orange-600 font-medium transition"
+                      className="w-full text-center py-2 text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium transition"
                     >
                       Sign In
                     </button>
@@ -263,7 +265,7 @@ const Navbar = () => {
                   <SignUpButton>
                     <button 
                       onClick={() => setShowMobileNav(false)}
-                      className="w-full bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 font-medium transition"
+                      className="btn-primary w-full font-medium"
                     >
                       Sign Up
                     </button>

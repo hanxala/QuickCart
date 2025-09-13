@@ -5,11 +5,14 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronDownIcon, UserIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
+import { useTheme } from '@/context/ThemeContext';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function UserProfileDropdown() {
   const { user } = useUser();
   const { signOut, openUserProfile } = useClerk();
   const router = useRouter();
+  const { theme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -88,7 +91,7 @@ export default function UserProfileDropdown() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
+        className="flex items-center space-x-2 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
       >
         <div className="w-8 h-8 rounded-full overflow-hidden">
           {user.imageUrl ? (
@@ -100,21 +103,21 @@ export default function UserProfileDropdown() {
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-gray-300 flex items-center justify-center">
-              <UserIcon className="w-4 h-4 text-gray-600" />
+            <div className="w-full h-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+              <UserIcon className="w-4 h-4 text-gray-600 dark:text-gray-300" />
             </div>
           )}
         </div>
-        <ChevronDownIcon className={`w-4 h-4 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDownIcon className={`w-4 h-4 text-gray-500 dark:text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-          <div className="px-4 py-3 border-b border-gray-100">
-            <p className="text-sm font-medium text-gray-900">
+        <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
+          <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
               {user.fullName || `${user.firstName} ${user.lastName}`}
             </p>
-            <p className="text-sm text-gray-500 truncate">
+            <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
               {user.emailAddresses[0]?.emailAddress}
             </p>
           </div>
@@ -122,7 +125,7 @@ export default function UserProfileDropdown() {
           <div className="py-1">
             <button
               onClick={handleProfile}
-              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
               <UserIcon className="w-4 h-4 mr-3" />
               Manage Profile
@@ -131,7 +134,7 @@ export default function UserProfileDropdown() {
             {!loading && isAdmin && (
               <button
                 onClick={handleAdminPanel}
-                className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <Cog6ToothIcon className="w-4 h-4 mr-3" />
                 Admin Panel
@@ -140,19 +143,32 @@ export default function UserProfileDropdown() {
 
             {/* Debug option - can be removed later */}
             {loading && (
-              <div className="px-4 py-2 text-sm text-gray-500">
+              <div className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
                 <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400 mr-2"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400 dark:border-gray-500 mr-2"></div>
                   Checking admin access...
                 </div>
               </div>
             )}
 
-            <div className="border-t border-gray-100 my-1"></div>
+            {/* Theme Toggle Section */}
+            <div className="px-4 py-3 border-t border-gray-100 dark:border-gray-700">
+              <div className="flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Theme</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+                    {theme} mode
+                  </span>
+                </div>
+                <ThemeToggle size="small" className="ml-3" />
+              </div>
+            </div>
+
+            <div className="border-t border-gray-100 dark:border-gray-700 my-1"></div>
             
             <button
               onClick={handleSignOut}
-              className="flex items-center w-full px-4 py-2 text-sm text-red-700 hover:bg-red-50 transition-colors"
+              className="flex items-center w-full px-4 py-2 text-sm text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
             >
               <ArrowRightOnRectangleIcon className="w-4 h-4 mr-3" />
               Sign Out

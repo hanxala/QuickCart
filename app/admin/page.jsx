@@ -125,15 +125,15 @@ export default function AdminDashboard() {
     return (
       <div className="animate-pulse">
         <div className="mb-8">
-          <div className="h-8 bg-gray-200 rounded w-64 mb-2"></div>
-          <div className="h-4 bg-gray-200 rounded w-96"></div>
+          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-64 mb-2"></div>
+          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-96"></div>
         </div>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-white overflow-hidden shadow rounded-lg">
+            <div key={i} className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
               <div className="p-5">
-                <div className="h-6 bg-gray-200 rounded mb-2"></div>
-                <div className="h-8 bg-gray-200 rounded"></div>
+                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded"></div>
               </div>
             </div>
           ))}
@@ -186,19 +186,19 @@ export default function AdminDashboard() {
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Live Dashboard</h1>
-          <p className="mt-2 text-sm text-gray-600">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Live Dashboard</h1>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Real-time view of your Hanzala.co store performance
           </p>
         </div>
         <div className="text-right">
-          <div className="flex items-center text-sm text-gray-500">
+          <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
             <ClockIcon className="w-4 h-4 mr-1" />
             Last updated: {lastUpdated ? formatTimeAgo(lastUpdated) : 'Loading...'}
           </div>
           <button 
             onClick={fetchDashboardData}
-            className="mt-1 text-sm text-blue-600 hover:text-blue-800"
+            className="mt-1 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
           >
             Refresh Now
           </button>
@@ -211,10 +211,12 @@ export default function AdminDashboard() {
           {dashboardData.alerts.map((alert, index) => (
             <div 
               key={index} 
-              className={`p-4 rounded-lg border-l-4 ${
+              className={`p-4 rounded-lg border-l-4 theme-transition ${
                 alert.type === 'warning' 
-                  ? 'bg-yellow-50 border-yellow-400 text-yellow-800'
-                  : 'bg-blue-50 border-blue-400 text-blue-800'
+                  ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-400 text-yellow-800 dark:text-yellow-200'
+                  : alert.type === 'error'
+                  ? 'bg-red-50 dark:bg-red-900/20 border-red-400 text-red-800 dark:text-red-200'
+                  : 'bg-blue-50 dark:bg-blue-900/20 border-blue-400 text-blue-800 dark:text-blue-200'
               }`}
             >
               <div className="flex items-center">
@@ -232,22 +234,22 @@ export default function AdminDashboard() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
         {stats.map((stat) => (
-          <div key={stat.name} className="bg-white overflow-hidden shadow-lg rounded-lg hover:shadow-xl transition-shadow">
+          <div key={stat.name} className="card overflow-hidden shadow-lg rounded-lg hover:shadow-xl transition-shadow">
             <div className="p-5">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <stat.icon className={`h-6 w-6 text-${stat.color}-500`} aria-hidden="true" />
+                  <stat.icon className={`h-6 w-6 text-${stat.color}-500 dark:text-${stat.color}-400`} aria-hidden="true" />
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">{stat.name}</dt>
-                    <dd className="text-lg font-semibold text-gray-900">{stat.value}</dd>
-                    <dd className="text-xs text-gray-400 mt-1">{stat.subValue}</dd>
+                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{stat.name}</dt>
+                    <dd className="text-lg font-semibold text-gray-900 dark:text-gray-100">{stat.value}</dd>
+                    <dd className="text-xs text-gray-400 dark:text-gray-500 mt-1">{stat.subValue}</dd>
                   </dl>
                 </div>
               </div>
             </div>
-            <div className="bg-gray-50 px-5 py-3">
+            <div className="bg-gray-50 dark:bg-gray-700/50 px-5 py-3 theme-transition">
               <div className="flex items-center text-sm">
                 {stat.changeType === 'increase' ? (
                   <ArrowTrendingUpIcon className="w-4 h-4 text-green-500 mr-1" />
@@ -255,11 +257,11 @@ export default function AdminDashboard() {
                   <ArrowTrendingDownIcon className="w-4 h-4 text-red-500 mr-1" />
                 )}
                 <span className={`font-medium ${
-                  stat.changeType === 'increase' ? 'text-green-600' : 'text-red-600'
+                  stat.changeType === 'increase' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
                 }`}>
                   {Math.abs(stat.change)}%
                 </span>
-                <span className="text-gray-500 ml-1">vs last week</span>
+                <span className="text-gray-500 dark:text-gray-400 ml-1">vs last week</span>
               </div>
             </div>
           </div>
@@ -269,24 +271,24 @@ export default function AdminDashboard() {
       {/* Recent Orders and Top Products */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Recent Orders */}
-        <div className="bg-white shadow-lg rounded-lg">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">Recent Orders</h3>
+        <div className="card shadow-lg rounded-lg">
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Recent Orders</h3>
           </div>
           <div className="p-0">
             {dashboardData.recentOrders && dashboardData.recentOrders.length > 0 ? (
-              <div className="divide-y divide-gray-200">
+              <div className="divide-y divide-gray-200 dark:divide-gray-700">
                 {dashboardData.recentOrders.slice(0, 5).map((order) => (
-                  <div key={order._id} className="p-4 hover:bg-gray-50">
+                  <div key={order._id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 theme-transition">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                           {order.customerName}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
                           {order.items} items • {formatCurrency(order.amount)}
                         </p>
-                        <p className="text-xs text-gray-400">
+                        <p className="text-xs text-gray-400 dark:text-gray-500">
                           {formatTimeAgo(order.createdAt)}
                         </p>
                       </div>
@@ -306,7 +308,7 @@ export default function AdminDashboard() {
                 ))}
               </div>
             ) : (
-              <div className="p-6 text-center text-gray-500">
+              <div className="p-6 text-center text-gray-500 dark:text-gray-400">
                 <p>No recent orders</p>
               </div>
             )}
@@ -314,29 +316,29 @@ export default function AdminDashboard() {
         </div>
 
         {/* Top Products */}
-        <div className="bg-white shadow-lg rounded-lg">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">Top Selling Products</h3>
+        <div className="card shadow-lg rounded-lg">
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Top Selling Products</h3>
           </div>
           <div className="p-0">
             {dashboardData.topProducts && dashboardData.topProducts.length > 0 ? (
-              <div className="divide-y divide-gray-200">
+              <div className="divide-y divide-gray-200 dark:divide-gray-700">
                 {dashboardData.topProducts.map((product, index) => (
-                  <div key={index} className="p-4 hover:bg-gray-50">
+                  <div key={index} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 theme-transition">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                           {product.name}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
                           {product.category} • Stock: {product.stock}
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                           {product.totalSold} sold
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
                           {formatCurrency(product.revenue)}
                         </p>
                       </div>
@@ -345,7 +347,7 @@ export default function AdminDashboard() {
                 ))}
               </div>
             ) : (
-              <div className="p-6 text-center text-gray-500">
+              <div className="p-6 text-center text-gray-500 dark:text-gray-400">
                 <p>No sales data yet</p>
               </div>
             )}
@@ -354,9 +356,9 @@ export default function AdminDashboard() {
       </div>
 
       {/* Quick Stats */}
-      <div className="bg-white shadow-lg rounded-lg">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">Quick Stats</h3>
+      <div className="card shadow-lg rounded-lg">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Quick Stats</h3>
         </div>
         <div className="p-6">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -364,19 +366,19 @@ export default function AdminDashboard() {
               <p className="text-2xl font-bold text-blue-600">
                 {dashboardData.stats.orders.pending}
               </p>
-              <p className="text-sm text-gray-500">Pending Orders</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Pending Orders</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-2xl font-bold text-green-600 dark:text-green-400">
                 {formatCurrency(dashboardData.stats.revenue.thisWeek)}
               </p>
-              <p className="text-sm text-gray-500">This Week Revenue</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">This Week Revenue</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold text-orange-600">
+              <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
                 {formatCurrency(dashboardData.stats.revenue.thisMonth)}
               </p>
-              <p className="text-sm text-gray-500">This Month Revenue</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">This Month Revenue</p>
             </div>
           </div>
         </div>

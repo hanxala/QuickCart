@@ -160,16 +160,16 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="animate-pulse">
-        <div className="h-8 bg-gray-200 rounded w-64 mb-6"></div>
+        <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-64 mb-6"></div>
         <div className="flex space-x-8">
           <div className="w-64 space-y-2">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="h-10 bg-gray-200 rounded"></div>
+              <div key={i} className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
             ))}
           </div>
           <div className="flex-1 space-y-4">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-16 bg-gray-200 rounded"></div>
+              <div key={i} className="h-16 bg-gray-200 dark:bg-gray-700 rounded"></div>
             ))}
           </div>
         </div>
@@ -180,9 +180,9 @@ export default function SettingsPage() {
   if (!settings) {
     return (
       <div className="text-center py-12">
-        <CogIcon className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">Unable to Load Settings</h3>
-        <p className="text-gray-500">Please try refreshing the page.</p>
+        <CogIcon className="mx-auto h-16 w-16 text-gray-400 dark:text-gray-500 mb-4" />
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">Unable to Load Settings</h3>
+        <p className="text-gray-500 dark:text-gray-400">Please try refreshing the page.</p>
       </div>
     );
   }
@@ -192,14 +192,14 @@ export default function SettingsPage() {
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-          <p className="mt-2 text-sm text-gray-600">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Settings</h1>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Manage your store configuration and preferences
           </p>
         </div>
         <div className="mt-4 lg:mt-0 flex items-center space-x-4">
           {hasChanges() && (
-            <div className="flex items-center text-amber-600 text-sm">
+            <div className="flex items-center text-amber-600 dark:text-amber-400 text-sm">
               <ExclamationTriangleIcon className="w-4 h-4 mr-1" />
               Unsaved changes
             </div>
@@ -207,14 +207,14 @@ export default function SettingsPage() {
           <button
             onClick={resetToDefaults}
             disabled={saving}
-            className="px-4 py-2 border border-red-300 text-red-700 rounded-md hover:bg-red-50 transition disabled:opacity-50"
+            className="px-4 py-2 border border-red-300 dark:border-red-600 text-red-700 dark:text-red-400 rounded-md hover:bg-red-50 dark:hover:bg-red-900/30 transition disabled:opacity-50"
           >
             Reset to Defaults
           </button>
           <button
             onClick={saveSettings}
             disabled={saving || !hasChanges()}
-            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:opacity-50 flex items-center"
+            className="px-6 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition disabled:opacity-50 flex items-center"
           >
             {saving ? (
               <ArrowPathIcon className="w-4 h-4 mr-2 animate-spin" />
@@ -236,12 +236,12 @@ export default function SettingsPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition ${
                   activeTab === tab.id
-                    ? 'bg-blue-100 text-blue-700 border-r-2 border-blue-700'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-r-2 border-blue-700 dark:border-blue-500'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100'
                 }`}
               >
                 <tab.icon className={`mr-3 h-5 w-5 ${
-                  activeTab === tab.id ? 'text-blue-500' : 'text-gray-400'
+                  activeTab === tab.id ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'
                 }`} />
                 {tab.name}
               </button>
@@ -250,38 +250,38 @@ export default function SettingsPage() {
         </div>
 
         {/* Settings Content */}
-        <div className="flex-1 bg-white rounded-lg shadow p-6">
+        <div className="flex-1 card rounded-lg shadow p-6">
           {/* General Settings */}
           {activeTab === 'general' && (
             <div className="space-y-6">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">General Settings</h2>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">General Settings</h2>
                 <div className="grid grid-cols-1 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Site Name</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Site Name</label>
                     <input
                       type="text"
                       value={getCurrentValue('general', 'siteName')}
                       onChange={(e) => handleInputChange('general', 'siteName', e.target.value)}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="input"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Site Description</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Site Description</label>
                     <textarea
                       value={getCurrentValue('general', 'siteDescription')}
                       onChange={(e) => handleInputChange('general', 'siteDescription', e.target.value)}
                       rows={3}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="input"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Currency</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Currency</label>
                       <select
                         value={getCurrentValue('general', 'currency')}
                         onChange={(e) => handleInputChange('general', 'currency', e.target.value)}
-                        className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="input"
                       >
                         <option value="INR">INR (Indian Rupee)</option>
                         <option value="USD">USD (US Dollar)</option>
@@ -289,11 +289,11 @@ export default function SettingsPage() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Timezone</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Timezone</label>
                       <select
                         value={getCurrentValue('general', 'timezone')}
                         onChange={(e) => handleInputChange('general', 'timezone', e.target.value)}
-                        className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="input"
                       >
                         <option value="Asia/Kolkata">Asia/Kolkata</option>
                         <option value="America/New_York">America/New_York</option>
@@ -308,9 +308,9 @@ export default function SettingsPage() {
                         id="maintenanceMode"
                         checked={getCurrentValue('general', 'maintenanceMode')}
                         onChange={(e) => handleInputChange('general', 'maintenanceMode', e.target.checked)}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded"
                       />
-                      <label htmlFor="maintenanceMode" className="ml-2 text-sm text-gray-700">
+                      <label htmlFor="maintenanceMode" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                         Enable Maintenance Mode
                       </label>
                     </div>
@@ -320,9 +320,9 @@ export default function SettingsPage() {
                         id="allowRegistrations"
                         checked={getCurrentValue('general', 'allowRegistrations')}
                         onChange={(e) => handleInputChange('general', 'allowRegistrations', e.target.checked)}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded"
                       />
-                      <label htmlFor="allowRegistrations" className="ml-2 text-sm text-gray-700">
+                      <label htmlFor="allowRegistrations" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                         Allow New Registrations
                       </label>
                     </div>
@@ -336,48 +336,48 @@ export default function SettingsPage() {
           {activeTab === 'email' && (
             <div className="space-y-6">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Email Configuration</h2>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Email Configuration</h2>
                 <div className="grid grid-cols-1 gap-6">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">SMTP Host</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">SMTP Host</label>
                       <input
                         type="text"
                         value={getCurrentValue('email', 'smtpHost')}
                         onChange={(e) => handleInputChange('email', 'smtpHost', e.target.value)}
-                        className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="input"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">SMTP Port</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">SMTP Port</label>
                       <input
                         type="number"
                         value={getCurrentValue('email', 'smtpPort')}
                         onChange={(e) => handleInputChange('email', 'smtpPort', parseInt(e.target.value))}
-                        className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="input"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Admin Email</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Admin Email</label>
                     <input
                       type="email"
                       value={getCurrentValue('email', 'adminEmail')}
                       onChange={(e) => handleInputChange('email', 'adminEmail', e.target.value)}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="input"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Notification Email</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Notification Email</label>
                     <input
                       type="email"
                       value={getCurrentValue('email', 'notificationEmail')}
                       onChange={(e) => handleInputChange('email', 'notificationEmail', e.target.value)}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="input"
                     />
                   </div>
                   <div className="space-y-4">
-                    <h3 className="text-lg font-medium text-gray-900">Email Notifications</h3>
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Email Notifications</h3>
                     <div className="space-y-2">
                       <div className="flex items-center">
                         <input
@@ -385,9 +385,9 @@ export default function SettingsPage() {
                           id="sendOrderConfirmation"
                           checked={getCurrentValue('email', 'sendOrderConfirmation')}
                           onChange={(e) => handleInputChange('email', 'sendOrderConfirmation', e.target.checked)}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded"
                         />
-                        <label htmlFor="sendOrderConfirmation" className="ml-2 text-sm text-gray-700">
+                        <label htmlFor="sendOrderConfirmation" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                           Send Order Confirmation Emails
                         </label>
                       </div>
@@ -397,9 +397,9 @@ export default function SettingsPage() {
                           id="sendLowStockAlerts"
                           checked={getCurrentValue('email', 'sendLowStockAlerts')}
                           onChange={(e) => handleInputChange('email', 'sendLowStockAlerts', e.target.checked)}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded"
                         />
-                        <label htmlFor="sendLowStockAlerts" className="ml-2 text-sm text-gray-700">
+                        <label htmlFor="sendLowStockAlerts" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                           Send Low Stock Alerts
                         </label>
                       </div>
@@ -409,9 +409,9 @@ export default function SettingsPage() {
                           id="sendNewUserNotifications"
                           checked={getCurrentValue('email', 'sendNewUserNotifications')}
                           onChange={(e) => handleInputChange('email', 'sendNewUserNotifications', e.target.checked)}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded"
                         />
-                        <label htmlFor="sendNewUserNotifications" className="ml-2 text-sm text-gray-700">
+                        <label htmlFor="sendNewUserNotifications" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                           Send New User Notifications
                         </label>
                       </div>
@@ -426,10 +426,10 @@ export default function SettingsPage() {
           {activeTab === 'payment' && (
             <div className="space-y-6">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Payment Configuration</h2>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Payment Configuration</h2>
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-3">Payment Methods</h3>
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-3">Payment Methods</h3>
                     <div className="space-y-2">
                       <div className="flex items-center">
                         <input
@@ -437,9 +437,9 @@ export default function SettingsPage() {
                           id="enableCOD"
                           checked={getCurrentValue('payment', 'enableCOD')}
                           onChange={(e) => handleInputChange('payment', 'enableCOD', e.target.checked)}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded"
                         />
-                        <label htmlFor="enableCOD" className="ml-2 text-sm text-gray-700">
+                        <label htmlFor="enableCOD" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                           Enable Cash on Delivery
                         </label>
                       </div>
@@ -449,9 +449,9 @@ export default function SettingsPage() {
                           id="enableUPI"
                           checked={getCurrentValue('payment', 'enableUPI')}
                           onChange={(e) => handleInputChange('payment', 'enableUPI', e.target.checked)}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded"
                         />
-                        <label htmlFor="enableUPI" className="ml-2 text-sm text-gray-700">
+                        <label htmlFor="enableUPI" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                           Enable UPI Payments
                         </label>
                       </div>
@@ -461,30 +461,30 @@ export default function SettingsPage() {
                           id="enableCards"
                           checked={getCurrentValue('payment', 'enableCards')}
                           onChange={(e) => handleInputChange('payment', 'enableCards', e.target.checked)}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded"
                         />
-                        <label htmlFor="enableCards" className="ml-2 text-sm text-gray-700">
+                        <label htmlFor="enableCards" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                           Enable Credit/Debit Cards
                         </label>
                       </div>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">UPI ID</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">UPI ID</label>
                     <input
                       type="text"
                       value={getCurrentValue('payment', 'upiId')}
                       onChange={(e) => handleInputChange('payment', 'upiId', e.target.value)}
                       placeholder="merchant@upi"
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="input"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Payment Gateway Mode</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Payment Gateway Mode</label>
                     <select
                       value={getCurrentValue('payment', 'paymentGatewayMode')}
                       onChange={(e) => handleInputChange('payment', 'paymentGatewayMode', e.target.value)}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="input"
                     >
                       <option value="test">Test Mode</option>
                       <option value="live">Live Mode</option>
@@ -499,7 +499,7 @@ export default function SettingsPage() {
           {activeTab === 'shipping' && (
             <div className="space-y-6">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Shipping Configuration</h2>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Shipping Configuration</h2>
                 <div className="grid grid-cols-1 gap-6">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -552,9 +552,9 @@ export default function SettingsPage() {
           
           {activeTab !== 'general' && activeTab !== 'email' && activeTab !== 'payment' && activeTab !== 'shipping' && (
             <div className="text-center py-12">
-              <CogIcon className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">{tabs.find(t => t.id === activeTab)?.name} Settings</h3>
-              <p className="text-gray-500">Configuration options for {activeTab} are coming soon.</p>
+              <CogIcon className="mx-auto h-16 w-16 text-gray-400 dark:text-gray-500 mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">{tabs.find(t => t.id === activeTab)?.name} Settings</h3>
+              <p className="text-gray-500 dark:text-gray-400">Configuration options for {activeTab} are coming soon.</p>
             </div>
           )}
         </div>

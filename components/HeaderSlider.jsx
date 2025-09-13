@@ -71,26 +71,26 @@ const HeaderSlider = () => {
         {sliderData.map((slide, index) => (
           <div
             key={slide.id}
-            className="flex flex-col-reverse md:flex-row items-center justify-between bg-[#E6E9F2] py-8 md:px-14 px-5 mt-6 rounded-xl min-w-full"
+            className="flex flex-col-reverse md:flex-row items-center justify-between bg-gradient-to-br from-[#E6E9F2] via-[#F0F3FF] to-[#E6E9F2] dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 py-8 md:px-14 px-5 mt-6 rounded-xl min-w-full border border-gray-200/50 dark:border-gray-700/50 shadow-lg dark:shadow-gray-900/50"
           >
             <div className="md:pl-8 mt-10 md:mt-0">
-              <p className="md:text-base text-orange-600 pb-1">{slide.offer}</p>
-              <h1 className="max-w-lg md:text-[40px] md:leading-[48px] text-2xl font-semibold">
+              <p className="md:text-base text-orange-600 dark:text-orange-400 pb-1 font-medium">{slide.offer}</p>
+              <h1 className="max-w-lg md:text-[40px] md:leading-[48px] text-2xl font-bold text-gray-900 dark:text-white">
                 {slide.title}
               </h1>
               <div className="flex items-center mt-4 md:mt-6 ">
                 <button 
                   onClick={slide.button1Action}
-                  className="md:px-10 px-7 md:py-2.5 py-2 bg-orange-600 rounded-full text-white font-medium hover:bg-orange-700 transition"
+                  className="btn-primary md:px-10 px-7 rounded-full font-semibold shadow-lg hover:shadow-xl dark:shadow-gray-900/50 transform hover:scale-105 transition-all duration-300"
                 >
                   {slide.buttonText1}
                 </button>
                 <button 
                   onClick={slide.button2Action}
-                  className="group flex items-center gap-2 px-6 py-2.5 font-medium hover:text-orange-600 transition"
+                  className="group flex items-center gap-2 px-6 py-2.5 font-medium text-gray-700 dark:text-gray-200 hover:text-orange-600 dark:hover:text-orange-400 transition"
                 >
                   {slide.buttonText2}
-                  <Image className="group-hover:translate-x-1 transition" src={assets.arrow_icon} alt="arrow_icon" />
+                  <Image className="group-hover:translate-x-1 transition dark:brightness-200" src={assets.arrow_icon} alt="arrow_icon" />
                 </button>
               </div>
             </div>
@@ -110,8 +110,8 @@ const HeaderSlider = () => {
           <div
             key={index}
             onClick={() => handleSlideChange(index)}
-            className={`h-2 w-2 rounded-full cursor-pointer ${
-              currentSlide === index ? "bg-orange-600" : "bg-gray-500/30"
+            className={`h-2 w-2 rounded-full cursor-pointer transition-colors duration-300 ${
+              currentSlide === index ? "bg-orange-600 dark:bg-orange-500" : "bg-gray-400/50 dark:bg-gray-600/50"
             }`}
           ></div>
         ))}

@@ -60,7 +60,7 @@ const ContactPage = () => {
   };
 
   return (
-    <>
+    <div>
       <Navbar />
       <div className="px-6 md:px-16 lg:px-32 py-12">
         {/* Hero Section */}
@@ -91,7 +91,7 @@ const ContactPage = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                    className="input"
                     placeholder="Enter your full name"
                   />
                 </div>
@@ -254,7 +254,7 @@ const ContactPage = () => {
         </div>
       </div>
       <Footer />
-    </>
+    </div>
   );
 };
 

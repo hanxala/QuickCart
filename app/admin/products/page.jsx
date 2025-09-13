@@ -221,10 +221,10 @@ export default function AdminProducts() {
   if (loading) {
     return (
       <div className="animate-pulse">
-        <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
+        <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-4"></div>
         <div className="space-y-4">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-20 bg-gray-200 rounded"></div>
+            <div key={i} className="h-20 bg-gray-200 dark:bg-gray-700 rounded"></div>
           ))}
         </div>
       </div>
@@ -236,8 +236,8 @@ export default function AdminProducts() {
       {/* Header with Stats */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Products Management</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Products Management</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             {products.length} total products • {filteredProducts.length} showing
             {selectedProducts.length > 0 && ` • ${selectedProducts.length} selected`}
           </p>
@@ -255,39 +255,39 @@ export default function AdminProducts() {
 
       {/* Quick Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-lg shadow border-l-4 border-blue-500">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border-l-4 border-blue-500">
           <div className="flex items-center">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Products</p>
-              <p className="text-2xl font-bold text-gray-900">{products.length}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Total Products</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{products.length}</p>
             </div>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow border-l-4 border-green-500">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border-l-4 border-green-500">
           <div className="flex items-center">
             <div>
-              <p className="text-sm font-medium text-gray-600">In Stock</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-300">In Stock</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {products.filter(p => (p.stock || 0) > 0).length}
               </p>
             </div>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow border-l-4 border-red-500">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border-l-4 border-red-500">
           <div className="flex items-center">
             <div>
-              <p className="text-sm font-medium text-gray-600">Out of Stock</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Out of Stock</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {products.filter(p => (p.stock || 0) === 0).length}
               </p>
             </div>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow border-l-4 border-purple-500">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border-l-4 border-purple-500">
           <div className="flex items-center">
             <div>
-              <p className="text-sm font-medium text-gray-600">Categories</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Categories</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {new Set(products.map(p => p.category)).size}
               </p>
             </div>
@@ -296,7 +296,7 @@ export default function AdminProducts() {
       </div>
 
       {/* Enhanced Search and Filters */}
-      <div className="bg-white rounded-lg shadow-sm border p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Search */}
           <div className="flex-1">
@@ -305,7 +305,7 @@ export default function AdminProducts() {
               placeholder="Search products by name, category, or description..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
             />
           </div>
           
@@ -314,8 +314,8 @@ export default function AdminProducts() {
             onClick={() => setShowFilters(!showFilters)}
             className={`px-4 py-2 rounded-lg border transition-colors ${
               showFilters 
-                ? 'bg-blue-50 border-blue-300 text-blue-700' 
-                : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300' 
+                : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
             }`}
           >
             <FunnelIcon className="h-5 w-5 mr-2 inline" />
@@ -325,12 +325,12 @@ export default function AdminProducts() {
 
         {/* Extended Filters */}
         {showFilters && (
-          <div className="mt-4 pt-4 border-t border-gray-200 grid grid-cols-1 lg:grid-cols-4 gap-4">
+          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 grid grid-cols-1 lg:grid-cols-4 gap-4">
             {/* Category Filter */}
             <select
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">All Categories</option>
               {categories.map(category => (
@@ -342,7 +342,7 @@ export default function AdminProducts() {
             <select
               value={sortField}
               onChange={(e) => setSortField(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="createdAt">Sort by Date</option>
               <option value="name">Sort by Name</option>
@@ -354,7 +354,7 @@ export default function AdminProducts() {
             {/* Sort Direction */}
             <button
               onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
-              className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition flex items-center justify-center"
+              className="px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition flex items-center justify-center"
             >
               {sortDirection === 'asc' ? (
                 <ArrowUpIcon className="h-4 w-4 mr-1" />
@@ -367,7 +367,7 @@ export default function AdminProducts() {
             {/* Clear Filters */}
             <button
               onClick={clearFilters}
-              className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition flex items-center justify-center"
+              className="px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition flex items-center justify-center"
             >
               <XMarkIcon className="h-4 w-4 mr-1" />
               Clear All
@@ -378,15 +378,15 @@ export default function AdminProducts() {
 
       {/* Bulk Actions */}
       {selectedProducts.length > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700/50 rounded-lg p-4">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-blue-700">
+            <p className="text-sm text-blue-700 dark:text-blue-300">
               {selectedProducts.length} product(s) selected
             </p>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setSelectedProducts([])}
-                className="text-sm text-blue-600 hover:text-blue-800"
+                className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
               >
                 Clear selection
               </button>
@@ -403,16 +403,16 @@ export default function AdminProducts() {
       )}
 
       {/* Products Grid/List */}
-      <div className="bg-white rounded-lg shadow-sm border">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         {filteredProducts.length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-gray-400 mb-4">
+            <div className="text-gray-400 dark:text-gray-500 mb-4">
               <svg className="mx-auto h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2 2v-5m16 0H4m16 0l-2-2m0 0l-2-2m2 2l2-2M4 13l2-2m0 0l2-2m-2 2l-2-2" />
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-            <p className="text-gray-500 mb-6">Get started by adding your first product.</p>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No products found</h3>
+            <p className="text-gray-500 dark:text-gray-400 mb-6">Get started by adding your first product.</p>
             <Link
               href="/admin/products/new"
               className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
@@ -424,27 +424,27 @@ export default function AdminProducts() {
         ) : (
           <div className="p-6">
             {/* Select All */}
-            <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">
+            <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
               <label className="flex items-center">
                 <input
                   type="checkbox"
                   checked={selectedProducts.length === filteredProducts.length && filteredProducts.length > 0}
                   onChange={toggleSelectAll}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4"
+                  className="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 h-4 w-4"
                 />
-                <span className="ml-2 text-sm text-gray-600">
+                <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">
                   Select all ({filteredProducts.length})
                 </span>
               </label>
               
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500">View:</span>
+                <span className="text-sm text-gray-500 dark:text-gray-400">View:</span>
                 <button
                   onClick={() => setViewMode('grid')}
                   className={`px-3 py-1 rounded text-sm transition ${
                     viewMode === 'grid' 
-                      ? 'bg-blue-100 text-blue-700' 
-                      : 'text-gray-600 hover:bg-gray-100'
+                      ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' 
+                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                 >
                   Grid
@@ -453,8 +453,8 @@ export default function AdminProducts() {
                   onClick={() => setViewMode('list')}
                   className={`px-3 py-1 rounded text-sm transition ${
                     viewMode === 'list' 
-                      ? 'bg-blue-100 text-blue-700' 
-                      : 'text-gray-600 hover:bg-gray-100'
+                      ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' 
+                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                 >
                   List
@@ -466,7 +466,7 @@ export default function AdminProducts() {
             {viewMode === 'grid' ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredProducts.map((product) => (
-                  <div key={product._id} className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                  <div key={product._id} className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
                     <div className="relative">
                       {/* Selection Checkbox */}
                       <div className="absolute top-2 left-2 z-10">
@@ -474,7 +474,7 @@ export default function AdminProducts() {
                           type="checkbox"
                           checked={selectedProducts.includes(product._id)}
                           onChange={() => toggleSelectProduct(product._id)}
-                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4 bg-white"
+                          className="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 h-4 w-4 bg-white dark:bg-gray-700"
                         />
                       </div>
                       
@@ -505,21 +505,21 @@ export default function AdminProducts() {
                     </div>
                     
                     <div className="p-4">
-                      <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
                         {product.name}
                       </h3>
-                      <p className="text-sm text-gray-600 mb-2">{product.category}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{product.category}</p>
                       <div className="flex items-center justify-between mb-3">
-                        <div className="text-lg font-bold text-gray-900">
+                        <div className="text-lg font-bold text-gray-900 dark:text-gray-100">
                           ₹{product.offerPrice}
                           {product.price !== product.offerPrice && (
-                            <span className="text-sm text-gray-500 line-through ml-2">
+                            <span className="text-sm text-gray-500 dark:text-gray-400 line-through ml-2">
                               ₹{product.price}
                             </span>
                           )}
                         </div>
                       </div>
-                      <div className="text-xs text-gray-500 mb-3">
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mb-3">
                         Created: {new Date(product.createdAt).toLocaleDateString()}
                       </div>
                       
@@ -527,7 +527,7 @@ export default function AdminProducts() {
                       <div className="flex items-center justify-between gap-2">
                         <Link
                           href={`/product/${product._id}`}
-                          className="flex-1 px-3 py-2 text-center text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition flex items-center justify-center"
+                          className="flex-1 px-3 py-2 text-center text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition flex items-center justify-center"
                         >
                           <EyeIcon className="h-4 w-4 mr-1" />
                           View
@@ -551,15 +551,15 @@ export default function AdminProducts() {
                 ))}
               </div>
             ) : (
-              <div className="divide-y divide-gray-200">
+              <div className="divide-y divide-gray-200 dark:divide-gray-700">
                 {filteredProducts.map((product) => (
-                  <div key={product._id} className="py-4 flex items-center justify-between hover:bg-gray-50 rounded-lg px-2 transition">
+                  <div key={product._id} className="py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg px-2 transition">
                     <div className="flex items-center flex-1">
                       <input
                         type="checkbox"
                         checked={selectedProducts.includes(product._id)}
                         onChange={() => toggleSelectProduct(product._id)}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4 mr-4"
+                        className="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 h-4 w-4 mr-4"
                       />
                       <div className="flex-shrink-0 h-16 w-16 mr-4">
                         <Image
@@ -573,17 +573,17 @@ export default function AdminProducts() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
-                            <h3 className="text-lg font-medium text-gray-900 truncate">
+                            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 truncate">
                               {product.name}
                             </h3>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
                               {product.category} • Created {new Date(product.createdAt).toLocaleDateString()}
                             </p>
                             <div className="flex items-center gap-4 mt-1">
-                              <span className="text-lg font-bold text-gray-900">
+                              <span className="text-lg font-bold text-gray-900 dark:text-gray-100">
                                 ₹{product.offerPrice}
                                 {product.price !== product.offerPrice && (
-                                  <span className="text-sm text-gray-500 line-through ml-2">
+                                  <span className="text-sm text-gray-500 dark:text-gray-400 line-through ml-2">
                                     ₹{product.price}
                                   </span>
                                 )}
@@ -609,21 +609,21 @@ export default function AdminProducts() {
                     <div className="flex items-center space-x-2 ml-4">
                       <Link
                         href={`/product/${product._id}`}
-                        className="p-2 text-gray-600 hover:text-blue-600 transition"
+                        className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition"
                         title="View Product"
                       >
                         <EyeIcon className="h-5 w-5" />
                       </Link>
                       <Link
                         href={`/admin/products/${product._id}/edit`}
-                        className="p-2 text-gray-600 hover:text-blue-600 transition"
+                        className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition"
                         title="Edit Product"
                       >
                         <PencilIcon className="h-5 w-5" />
                       </Link>
                       <button
                         onClick={() => handleDeleteProduct(product._id)}
-                        className="p-2 text-gray-600 hover:text-red-600 transition"
+                        className="p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition"
                         title="Delete Product"
                       >
                         <TrashIcon className="h-5 w-5" />
